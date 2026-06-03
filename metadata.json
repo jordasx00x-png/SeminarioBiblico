@@ -1,6 +1,6 @@
 {
   "name": "Seminario Teológico Digital",
-  "description": "Plataforma web educativa interactiva de Teología y Estudios Bíblicos.",
+  "description": "Plataforma educativa de Teología y Estudios Bíblicos (Versión Estática).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -6,8 +6,7 @@ import { LessonNotes } from './LessonNotes';
 import { AcademicPanel } from './AcademicPanel';
 import { ReinforcementVerses } from './ReinforcementVerses';
 import { LessonAssignments } from './LessonAssignments';
-import { TheologicalChat } from './TheologicalChat';
-import { ArrowLeft, MessageSquare, BookOpen, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle2 } from 'lucide-react';
 
 interface LessonViewerProps {
   key?: string | number;
@@ -299,12 +298,6 @@ export function LessonViewer({ lesson, course, progress, onComplete, onBack }: L
           )}
         </div>
       </div>
-      <TheologicalChat 
-        lessonId={lesson.id} 
-        courseId={course.id} 
-        lessonTitle={lesson.title} 
-        lessonContent={lesson.blocks} 
-      />
     </div>
   );
 }
