@@ -36,23 +36,23 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-500">
-         <div className="bg-white border border-[#E0D7C6] rounded-xl p-4 md:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-[#1A2533] text-white rounded-lg flex items-center justify-center shrink-0">
-               <BarChart3 size={20} className="md:w-6 md:h-6" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-500">
+         <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+            <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
+               <BarChart3 size={24} />
             </div>
             <div>
-               <div className="text-[9px] md:text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1">Avance Global</div>
-               <div className="text-xl md:text-2xl font-bold text-[#1A2533]">{globalProg.percentage}%</div>
+               <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Avance Global</div>
+               <div className="text-2xl font-black text-[#1A2533]">{globalProg.percentage}%</div>
             </div>
          </div>
-         <div className="bg-white border border-[#E0D7C6] rounded-xl p-4 md:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center shrink-0">
-               <CheckCircle size={20} className="md:w-6 md:h-6" />
+         <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+            <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+               <CheckCircle size={24} />
             </div>
             <div>
-               <div className="text-[9px] md:text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1">Acreditadas</div>
-               <div className="text-xl md:text-2xl font-bold text-[#1A2533]">{globalProg.completed} <span className="text-sm text-gray-400 font-normal">/ {globalProg.total}</span></div>
+               <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
+               <div className="text-2xl font-black text-[#1A2533]">{globalProg.completed} <span className="text-sm text-gray-400 font-normal">/ {globalProg.total}</span></div>
             </div>
          </div>
       </div>

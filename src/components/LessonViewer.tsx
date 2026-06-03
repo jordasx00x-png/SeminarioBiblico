@@ -56,37 +56,33 @@ export function LessonViewer({ lesson, course, progress, onComplete, onBack }: L
   return (
     <div className="flex flex-col min-h-full">
       <header className="h-16 bg-white border-b border-[#E0D7C6] px-4 md:px-8 flex items-center justify-between shadow-sm sticky top-0 z-20 shrink-0">
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
           <button 
             onClick={onBack}
-            className="flex items-center gap-2 text-gray-500 hover:text-[#1A2533] transition-colors font-sans text-xs md:text-sm font-semibold uppercase tracking-widest mr-2"
+            className="flex items-center gap-2 text-gray-500 hover:text-[#1A2533] transition-colors font-sans text-xs font-semibold uppercase tracking-widest mr-1 md:mr-2 shrink-0"
           >
             <ArrowLeft size={16} />
             <span className="hidden sm:inline">Volver</span>
           </button>
-          <div className="h-4 w-px bg-[#E0D7C6] hidden sm:block"></div>
-          <span className="text-[10px] md:text-xs font-sans text-gray-500 uppercase tracking-widest hidden lg:inline">{course.title}</span>
-          <span className="text-gray-400 hidden lg:inline">/</span>
-          <span className="text-xs md:text-sm font-semibold text-[#1A2533] truncate">Día {lesson.day}: {lesson.title}</span>
+          <div className="h-4 w-px bg-[#E0D7C6] hidden sm:block shrink-0"></div>
+          <span className="text-xs font-semibold text-[#1A2533] truncate">Día {lesson.day}: {lesson.title}</span>
         </div>
-        <div className="flex items-center gap-6">
-          {isPreviouslyCompleted && (
-            <div className="text-right hidden sm:block">
-              <div className="text-[10px] uppercase text-gray-400 font-sans">Progreso Diario</div>
-              <div className="text-sm font-bold text-[#7F1D1D]">100% Completado</div>
-            </div>
-          )}
+        <div className="flex items-center gap-3 md:gap-6 shrink-0">
           <button 
-             className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-colors ${
+             className={`px-3 md:px-4 py-2 rounded-md text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors ${
                showExam ? 'bg-[#7F1D1D] text-white hover:bg-red-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
              }`}
              onClick={() => {
                 if (showExam) {
-                   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                   const examElement = document.getElementById('final-exam-section');
+                   if (examElement) {
+                      examElement.scrollIntoView({ behavior: 'smooth' });
+                   }
                 }
              }}
           >
-             Examen Final
+             <span className="md:hidden">Examen</span>
+             <span className="hidden md:inline">Examen Final</span>
           </button>
         </div>
       </header>
@@ -286,7 +282,7 @@ export function LessonViewer({ lesson, course, progress, onComplete, onBack }: L
           <LessonNotes lessonId={lesson.id} courseId={course.id} />
 
           {showExam && (
-             <div className="mt-8 mb-20 animate-in fade-in duration-1000 slide-in-from-bottom-8">
+             <div id="final-exam-section" className="mt-8 mb-20 animate-in fade-in duration-1000 slide-in-from-bottom-8">
                <FinalExam 
                  questions={lesson.finalExam} 
                  isPreviouslyCompleted={isPreviouslyCompleted}

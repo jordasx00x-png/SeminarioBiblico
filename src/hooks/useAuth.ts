@@ -18,9 +18,22 @@ export function useAuth() {
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      // Try popup first
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing in with Google', error);
+      
+      // If popup is blocked or fails, try redirect as fallback (common on mobile)
+      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        // We can't easily auto-redirect from inside a click handler without user knowing,
+        // but we can try it.
+        try {
+          const { signInWithRedirect } = await import('firebase/auth');
+          await signInWithRedirect(auth, provider);
+        } catch (e) {
+          console.error('Redirect failed too', e);
+        }
+      }
     }
   };
 

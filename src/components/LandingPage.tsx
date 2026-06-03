@@ -17,8 +17,11 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
           </div>
         </div>
         <button 
-          onClick={onSignIn}
-          className="bg-white text-[#1A2533] hover:bg-[#E0D7C6] px-5 py-2.5 rounded text-xs font-bold tracking-widest uppercase transition-colors flex items-center gap-2 shadow-sm font-sans"
+          onClick={(e) => {
+            e.preventDefault();
+            onSignIn();
+          }}
+          className="bg-white text-[#1A2533] hover:bg-[#E0D7C6] active:scale-95 px-5 py-2.5 rounded text-xs font-bold tracking-widest uppercase transition-colors flex items-center gap-2 shadow-sm font-sans relative z-20 cursor-pointer"
         >
           <LogIn size={16} />
           <span className="hidden sm:inline">Iniciar Sesión</span>
@@ -35,15 +38,18 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
                <Sparkles size={14} />
                Formación Académica y Ministerial
              </div>
-             <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] text-white py-1">
+             <h2 className="text-3xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] text-white">
                Rigor Exegético para la <span className="text-[#E0D7C6] italic">Iglesia Moderna</span>
              </h2>
-             <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-12 leading-relaxed">
+             <p className="text-base md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
                Una plataforma educativa diseñada para profundizar en las Escrituras a través del método histórico-crítico, teología sistemática y herramientas ministeriales avanzadas.
              </p>
              <button 
-              onClick={onSignIn}
-              className="bg-[#7F1D1D] hover:bg-red-800 text-white px-8 py-4 rounded text-sm font-bold tracking-widest uppercase transition-all flex items-center gap-3 shadow-xl hover:shadow-2xl hover:-translate-y-1 font-sans"
+              onClick={(e) => {
+                e.preventDefault();
+                onSignIn();
+              }}
+              className="w-full sm:w-auto bg-[#7F1D1D] hover:bg-red-800 active:scale-95 text-white px-8 py-4 rounded text-sm font-bold tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl md:hover:-translate-y-1 font-sans relative z-20 cursor-pointer"
             >
               Comenzar Estudios
               <ArrowRight size={18} />
@@ -143,8 +149,11 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
                 </div>
                 
                 <button 
-                  onClick={onSignIn}
-                  className="w-full mt-6 bg-[#1A2533] hover:bg-[#2C3E50] text-white py-3 rounded text-xs font-bold tracking-widest uppercase transition-colors font-sans"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSignIn();
+                  }}
+                  className="w-full mt-6 bg-[#1A2533] hover:bg-[#2C3E50] active:scale-95 text-white py-3 rounded text-xs font-bold tracking-widest uppercase transition-colors font-sans relative z-20 cursor-pointer"
                 >
                   Continuar Aprendizaje
                 </button>
