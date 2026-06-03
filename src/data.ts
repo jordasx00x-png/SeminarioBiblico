@@ -14,6 +14,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Cómo Estudiar el Texto Bíblico',
           blocks: [
             {
+              type: 'note',
+              id: 'exe-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Nehemías 8** antes de comenzar.'
+            },
+            {
               type: 'text',
               id: 'exe-d1-b1',
               content: `El estudio serio de la Biblia se llama **exégesis**. No te asustes por el nombre; simplemente significa "sacar o guiar hacia afuera" el mensaje que el autor original quiso dar. Lo contrario es la **eiségesis**, que es cuando nosotros "metemos" nuestras propias ideas o deseos en el texto.\n\nPara estudiar bien, usamos un método que analiza la historia y el contexto. Aunque parezca algo muy académico, en realidad es una forma de ser respetuosos con lo que Dios dijo en su momento.`
@@ -136,6 +141,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Estudiando las Palabras y su Contexto',
           blocks: [
             {
+              type: 'note',
+              id: 'exe-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Salmo 119:97-112** antes de comenzar.'
+            },
+            {
               type: 'text',
               id: 'exe-d2-b1',
               content: `El **Estudio de Palabras** consiste en entender qué significaba una palabra específica en el idioma original (hebreo o griego) en el momento en que se escribió. Un error común es pensar que una palabra significa lo mismo hoy que hace 2000 años. El contexto siempre es el que manda y nos da el sentido real.`
@@ -198,6 +208,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 3,
           title: 'Descubriendo el Mensaje y su Aplicación',
           blocks: [
+            {
+              type: 'note',
+              id: 'exe-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el pasaje completo de **Hechos 8:26-40** antes de comenzar.'
+            },
             {
               type: 'text',
               id: 'exe-d3-b1',
@@ -269,6 +284,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: 'Génesis 1:1-5 - Formando lo Informe',
           blocks: [
+            {
+              type: 'note',
+              id: 'gen-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Génesis 1** antes de comenzar.'
+            },
             {
               type: 'text',
               id: 'gen-d1-b1',
@@ -372,6 +392,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Génesis 1:6-19 - Formando las Esferas de Dominio',
           blocks: [
             {
+              type: 'note',
+              id: 'gen-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Génesis 1** (Segunda parte) antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'gen-d2-b1',
                content: `**Día 2 (Versículos 6-8):** Dios crea una "expansión" (firmamento) para separar las aguas de arriba de las aguas de abajo. En la cosmología del antiguo Oriente, esto representaba la separación de un espacio habitable en medio de las aguas caóticas. Dios establece límites estructurales para preservar la vida emergente.`
@@ -425,6 +450,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 3,
           title: 'Génesis 1:20-31 - El Pináculo de la Creación',
           blocks: [
+            {
+              type: 'note',
+              id: 'gen-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Génesis 2** antes de comenzar.'
+            },
             {
                type: 'text',
                id: 'gen-d3-b1',
@@ -487,6 +517,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: "Cómo Preparar el Mensaje",
           blocks: [
+            {
+              type: 'note',
+              id: 'hom-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **2 Timoteo 4** antes de comenzar.'
+            },
             {
               type: 'text',
               id: 'hom-d1-b1',
@@ -599,6 +634,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Organizando el Mensaje',
           blocks: [
             {
+              type: 'note',
+              id: 'hom-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Nehemías 8** antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'hom-d2-b1',
                content: `Después de estudiar bien el pasaje, debemos organizar el mensaje. Todo sermón necesita un orden: una introducción para captar la atención, unos puntos principales para explicar la Biblia, y una conclusión para animar a la acción. Los puntos no deben ser inventados por el predicador, sino que deben salir directamente de lo que dice el texto bíblico.`
@@ -656,6 +696,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 3,
           title: 'Ejemplos y Aplicación a la Vida',
           blocks: [
+            {
+              type: 'note',
+              id: 'hom-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Hechos 2** antes de comenzar.'
+            },
             {
                type: 'text',
                id: 'hom-d3-b1',
@@ -727,6 +772,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: "¿Cómo Podemos Conocer a Dios?",
           blocks: [
+            {
+              type: 'note',
+              id: 'teo-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Isaías 40** antes de comenzar.'
+            },
             {
               type: 'text',
               id: 'teo-d1-b1',
@@ -839,6 +889,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: '¿Cómo es Dios? Sus Atributos',
           blocks: [
             {
+              type: 'note',
+              id: 'teo-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Salmo 139** antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'teo-d2-b1',
                content: `Cuando estudiamos quién es Dios, hablamos de sus "atributos" o características. Hay dos tipos. Los **Atributos Únicos** son los que solo Dios tiene, como ser Eterno (no tiene inicio ni fin), estar en todo lugar al mismo tiempo (Omnipresencia) y su **Aseidad** (Dios no necesita de nada ni nadie para existir; Él es independiente).`
@@ -896,6 +951,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 3,
           title: 'El Plan Eterno de Dios',
           blocks: [
+            {
+              type: 'note',
+              id: 'teo-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Efesios 1** antes de comenzar.'
+            },
             {
                type: 'text',
                id: 'teo-d3-b1',
@@ -962,7 +1022,12 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: "¿Qué es dar Razón de nuestra Fe?",
           blocks: [
-             {
+            {
+              type: 'note',
+              id: 'apol-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **1 Pedro 3** antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'apol-d1-b1',
                content: `La palabra **defensa** (o apologética) viene de una palabra griega que significa "respuesta fundamentada". No se trata de pedir perdón por creer, ni de pelear con otros, sino de dar razones claras y con amor sobre la esperanza que tenemos en Cristo.`
@@ -1022,6 +1087,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Pruebas de que hay un Creador',
           blocks: [
             {
+              type: 'note',
+              id: 'apol-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Romanos 1** antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'apol-d2-b1',
                content: `Una de las formas más sencillas de explicar nuestra fe es observar el origen del universo. Todo lo que comienza a existir debe tener una causa. Como el universo tuvo un comienzo, debe haber Alguien poderoso, fuera del tiempo y del espacio, que lo haya creado. Ese Alguien es Dios.`
@@ -1079,6 +1149,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 3,
           title: '¿Por qué hay Sufrimiento?',
           blocks: [
+            {
+              type: 'note',
+              id: 'apol-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Job 38** antes de comenzar.'
+            },
             {
                type: 'text',
                id: 'apol-d3-b1',
@@ -1145,7 +1220,12 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: "Dios en Tres Personas",
           blocks: [
-             {
+            {
+              type: 'note',
+              id: 'doc-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Mateo 3** (El Bautismo de Jesús) antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'doc-d1-b1',
                content: `La **Trinidad** es una de las doctrinas más esenciales y distintivas del cristianismo ortodoxo. La afirmación trinitaria establece que existe un solo Dios y esencia divina, pero que esta esencia subsiste eternamente en tres distintas Personas co-iguales y co-eternas: Padre, Hijo y Espíritu Santo.`
@@ -1205,6 +1285,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Jesús: Verdadero Dios y Verdadero Hombre',
           blocks: [
             {
+              type: 'note',
+              id: 'doc-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Filipenses 2** antes de comenzar.'
+            },
+            {
                type: 'text',
                id: 'doc-d2-b1',
                content: `Cuando estudiamos a **Jesús**, vemos el milagro más grande: Dios se hizo hombre. La Biblia nos enseña que Jesús es 100% Dios y 100% hombre al mismo tiempo. No es "mitad y mitad", sino que en su única persona se unen perfectamente sus dos naturalezas. Esto era necesario para que pudiera ser nuestro mediador.`
@@ -1262,6 +1347,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 3,
           title: 'Cómo Somos Salvos',
           blocks: [
+            {
+              type: 'note',
+              id: 'doc-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Romanos 5** antes de comenzar.'
+            },
             {
                type: 'text',
                id: 'doc-d3-b1',
@@ -1328,6 +1418,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: 'Éxodo: El Dios que Redime',
           blocks: [
+            {
+              type: 'note',
+              id: 'exo-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Éxodo 12** antes de comenzar.'
+            },
             {
               type: 'text',
               id: 'exo-d1-b1',
@@ -1397,6 +1492,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Josué y la Conquista',
           blocks: [
             {
+              type: 'note',
+              id: 'his-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Josué 1** antes de comenzar.'
+            },
+            {
               type: 'text',
               id: 'his-d1-b1',
               content: `Josué narra el cumplimiento de la promesa de la tierra a Abraham. No es simplemente una crónica militar, sino una demostración de la santidad de Dios y la necesidad de obediencia de su pueblo.\n\nEl paso del Jordán y la caída de Jericó subrayan que la victoria depende de la fe en la Palabra de Dios, no de la fuerza humana.`
@@ -1465,6 +1565,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Salmos: El Himnario de la Fe',
           blocks: [
             {
+              type: 'note',
+              id: 'poe-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Salmo 1** antes de comenzar.'
+            },
+            {
               type: 'text',
               id: 'poe-d1-b1',
               content: `Los Salmos son oraciones y cantos que abarcan toda la gama de emociones humanas. Se dividen en himnos de alabanza, salmos de lamento, salmos de acción de gracias y salmos mesiánicos.\n\nEl Salmo 1 actúa como pórtico, definiendo dos caminos: el del justo que se deleita en la ley, y el del impío que perece.`
@@ -1503,6 +1608,11 @@ export const mockDatabase: { courses: Course[] } = {
           day: 1,
           title: 'Isaías: El Profeta Evangélico',
           blocks: [
+            {
+              type: 'note',
+              id: 'pro-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Isaías 6** (La visión de la gloria de Dios) antes de comenzar.'
+            },
             {
               type: 'text',
               id: 'pro-d1-b1',
@@ -1543,6 +1653,11 @@ export const mockDatabase: { courses: Course[] } = {
           title: 'Los Sinópticos y Juan',
           blocks: [
             {
+              type: 'note',
+              id: 'eva-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Juan 1** antes de comenzar.'
+            },
+            {
               type: 'text',
               id: 'eva-d1-b1',
               content: `Los Evangelios no son biografías modernas, sino retratos teológicos de Jesús. Mateo lo presenta como el Rey de los Judíos; Marcos como el Siervo Sufriente; Lucas como el Hombre Perfecto y Salvador del mundo; y Juan como el Dios Eterno encarnado.`
@@ -1569,6 +1684,580 @@ export const mockDatabase: { courses: Course[] } = {
           assignments: [{ id: 'aev1', description: 'Comparar el relato de la tentación de Jesús en Mateo y Lucas.' }]
         }
       ]
+    },
+    {
+      id: 'bases-fundamentales',
+      title: 'Bases Fundamentales',
+      type: 'BIBLE_STUDY',
+      description: 'Explora los pilares esenciales de la fe cristiana, desde el arrepentimiento hasta la vida en el Espíritu.',
+      lessons: [
+        {
+          id: 'bases-d1',
+          day: 1,
+          title: 'El Arrepentimiento',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d1-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Lucas 15** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d1-b1',
+              content: 'El arrepentimiento (metanoia) es el primer paso en la vida cristiana. No es una emoción pasajera, sino un cambio radical de perspectiva y voluntad. Implica reconocer que íbamos por el camino equivocado y decidir volvernos hacia Dios.'
+            },
+            {
+              type: 'note',
+              id: 'b-d1-n1',
+              content: 'El arrepentimiento es la puerta de entrada a la gracia. Sin reconocer nuestra necesidad de cambio, no podemos recibir el perdón.'
+            },
+            {
+              type: 'control',
+              id: 'b-d1-q1',
+              question: {
+                id: 'bq1',
+                question: '¿Qué significa el término "metanoia"?',
+                options: ['Sentir culpa constante', 'Cambio de mente y propósito', 'Llorar por los errores'],
+                correctAnswerIndex: 1
+              }
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b1',
+              question: '¿Cuál es el fruto de un arrepentimiento genuino según el Nuevo Testamento?',
+              options: ['Hacer sacrificios costosos', 'Cambio de conducta y vida santa', 'Saberse de memoria los mandamientos'],
+              correctAnswerIndex: 1,
+              explanation: 'El arrepentimiento verdadero siempre se manifiesta en una vida que busca honrar a Dios mediante la obediencia.'
+            }
+          ],
+          baseVerse: { reference: 'Mateo 4:17', text: 'Desde entonces comenzó Jesús a predicar, y a decir: Arrepentíos, porque el reino de los cielos se ha acercado.' }
+        },
+        {
+          id: 'bases-d2',
+          day: 2,
+          title: 'La Fe',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d2-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Hebreos 11** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d2-b1',
+              content: 'La fe no es un sentimiento o un deseo ciego. Es la confianza plena en la Palabra de Dios y en la persona de Jesucristo. Según Hebreos 11, la fe es la certeza de lo que se espera y la convicción de lo que no se ve.'
+            },
+            {
+              type: 'control',
+              id: 'b-d2-q1',
+              question: {
+                id: 'bq2',
+                question: '¿Cómo define la Biblia la fe en el libro de Hebreos?',
+                options: ['Un deseo de que las cosas salgan bien', 'La certeza de lo que se espera y convicción de lo que no se ve', 'Una creencia sin pruebas'],
+                correctAnswerIndex: 1
+              }
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b2',
+              question: 'Sin fe es imposible:',
+              options: ['Tener mucho dinero', 'Agradar a Dios', 'Ser una buena persona moralmente'],
+              correctAnswerIndex: 1,
+              explanation: 'La Biblia es clara en que la fe es el vínculo vital para relacionarnos con Dios.'
+            }
+          ],
+          baseVerse: { reference: 'Hebreos 11:1', text: 'Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve.' }
+        },
+        {
+          id: 'bases-d3',
+          day: 3,
+          title: 'El Perdón',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d3-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Mateo 18** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d3-b1',
+              content: 'El perdón es la base de nuestra paz. Dios nos ha perdonado mediante el sacrificio de Jesús, y nosotros, como sus seguidores, estamos llamados a perdonar a los demás. El perdón no es opcional, es una característica del carácter de Cristo en nosotros.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b3',
+              question: '¿Cuántas veces dijo Jesús que debemos perdonar?',
+              options: ['Siete veces', 'Solo si nos lo piden', 'Hasta setenta veces siete (siempre)'],
+              correctAnswerIndex: 2,
+              explanation: 'Jesús enfatizó la necesidad de un corazón perdonador constante.'
+            }
+          ],
+          baseVerse: { reference: 'Efesios 4:32', text: 'Antes sed benignos unos con otros, misericordiosos, perdonándoos unos a otros, como Dios también os perdonó a vosotros en Cristo.' }
+        },
+        {
+          id: 'bases-d4',
+          day: 4,
+          title: 'La Obediencia',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d4-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Deuteronomio 28** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d4-b1',
+              content: 'La obediencia es la prueba de nuestro amor por Dios. No obedecemos para ser salvos, sino porque YA hemos sido salvados por gracia. La obediencia nace de la gratitud.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b4',
+              question: '¿Qué dijo Jesús sobre los que le aman?',
+              options: ['Que deben cantar mucho', 'Que guardarán sus mandamientos', 'Que deben ir al templo todos los días'],
+              correctAnswerIndex: 1,
+              explanation: 'La obediencia activa es la marca distintiva del discípulo.'
+            }
+          ],
+          baseVerse: { reference: 'Juan 14:15', text: 'Si me amáis, guardad mis mandamientos.' }
+        },
+        {
+          id: 'bases-d5',
+          day: 5,
+          title: 'La Familia',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d5-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Efesios 5** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d5-b1',
+              content: 'La familia es la primera institución creada por Dios. Es el lugar donde se refleja el amor de Cristo por la Iglesia y donde se transmiten los valores eternos a las nuevas generaciones.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b5',
+              question: '¿Cuál es el primer mandamiento con promesa para los hijos?',
+              options: ['No robar', 'Honrar a padre y madre', 'No matar'],
+              correctAnswerIndex: 1,
+              explanation: 'Honrar a los padres es fundamental en el diseño divino para la bendición familiar.'
+            }
+          ],
+          baseVerse: { reference: 'Salmo 127:3', text: 'He aquí, herencia de Jehová son los hijos; cosa de estima el fruto del vientre.' }
+        },
+        {
+          id: 'bases-d6',
+          day: 6,
+          title: 'El Espíritu Santo',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d6-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Hechos 2** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d6-b1',
+              content: 'El Espíritu Santo es la tercera persona de la Trinidad. Él nos guía a toda verdad, nos consuela y nos da poder para ser testigos de Jesús en el mundo.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b6',
+              question: '¿Qué función primordial realiza el Espíritu Santo según Jesús?',
+              options: ['Darnos riquezas', 'Guiarnos a toda verdad y recordarnos sus palabras', 'Hacer que no tengamos problemas'],
+              correctAnswerIndex: 1,
+              explanation: 'El Consolador habita en el creyente para revelarle la voluntad de Dios.'
+            }
+          ],
+          baseVerse: { reference: 'Juan 14:26', text: 'Mas el Consolador, el Espíritu Santo... él os enseñará todas las cosas...' }
+        },
+        {
+          id: 'bases-d7',
+          day: 7,
+          title: 'La Biblia',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d7-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **2 Timoteo 3** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d7-b1',
+              content: 'La Biblia es la Palabra inspirada de Dios. Es nuestra regla de fe y conducta. A través de ella, Dios se revela a la humanidad y nos muestra el camino de la salvación.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b7',
+              question: '¿Qué significa que la Biblia es inspirada?',
+              options: ['Que los autores eran muy creativos', 'Que Dios guio a los autores mediante el Espíritu Santo para escribir su verdad', 'Que es un libro de cuentos antiguos'],
+              correctAnswerIndex: 1,
+              explanation: 'La inspiración divina garantiza la autoridad y veracidad de las Escrituras.'
+            }
+          ],
+          baseVerse: { reference: '2 Timoteo 3:16', text: 'Toda la Escritura es inspirada por Dios...' }
+        },
+        {
+          id: 'bases-d8',
+          day: 8,
+          title: 'La Oración y el Ayuno',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d8-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Mateo 6** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d8-b1',
+              content: 'La oración es nuestra comunicación directa con Dios. El ayuno, por su parte, es abstenerse voluntariamente de alimento para enfocarnos plenamente en lo espiritual y buscar el rostro de Dios con humildad.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b8',
+              question: '¿Cuál es el propósito principal del ayuno cristiano?',
+              options: ['Bajar de peso', 'Demostrar que somos muy santos', 'Humillarse ante Dios y sensibilizar el espíritu a su presencia'],
+              correctAnswerIndex: 2,
+              explanation: 'El ayuno no es un ritual externo, sino una búsqueda profunda del Señor.'
+            }
+          ],
+          baseVerse: { reference: 'Mateo 6:6', text: 'Mas tú, cuando ores, entra en tu aposento...' }
+        },
+        {
+          id: 'bases-d9',
+          day: 9,
+          title: 'El Bautismo',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d9-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Romanos 6** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d9-b1',
+              content: 'El bautismo es un paso público de obediencia e identificación con la muerte y resurrección de Cristo. Es un símbolo externo de una transformación interna real.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b9',
+              question: 'El bautismo en aguas simboliza:',
+              options: ['Un rito de limpieza física', 'La identificación con la muerte al pecado y la resurrección a vida nueva en Cristo', 'Ser parte de un club social'],
+              correctAnswerIndex: 1,
+              explanation: 'Es un testimonio público de la fe salvadora.'
+            }
+          ],
+          baseVerse: { reference: 'Romanos 6:4', text: 'Porque somos sepultados juntamente con él a muerte por el bautismo...' }
+        },
+        {
+          id: 'bases-d10',
+          day: 10,
+          title: 'La Santa Cena',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d10-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **1 Corintios 11** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d10-b1',
+              content: 'La Santa Cena es la conmemoración del sacrificio de Jesús. El pan representa su cuerpo entregado y el vino (fruto de la vid) representa su sangre vertida por el perdón de nuestros pecados.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b10',
+              question: '¿Con qué propósito nos mandó Jesús celebrar la Santa Cena?',
+              options: ['Para comer algo en la iglesia', 'En memoria de Él y de su sacrificio', 'Como un requisito legal'],
+              correctAnswerIndex: 1,
+              explanation: 'Es un memorial de la obra redentora de Cristo hasta que Él regrese.'
+            }
+          ],
+          baseVerse: { reference: '1 Corintios 11:24', text: '...haced esto en memoria de mí.' }
+        },
+        {
+          id: 'bases-d11',
+          day: 11,
+          title: 'Qué es ser Cristiano',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d11-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Mateo 5** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d11-b1',
+              content: 'Ser cristiano no es solo pertenecer a un grupo religioso. Es ser un discípulo de Cristo, alguien que ha decidido seguirle, imitarle y rendir su vida a Su señorío.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b11',
+              question: '¿Dónde se usó por primera vez el término "cristiano" para los discípulos?',
+              options: ['En Jerusalén', 'En Antioquía', 'En Roma'],
+              correctAnswerIndex: 1,
+              explanation: 'Los creyentes fueron llamados cristianos por primera vez en Antioquía debido a su evidente parecido con Cristo.'
+            }
+          ],
+          baseVerse: { reference: 'Hechos 11:26', text: '...y a los discípulos se les llamó cristianos por primera vez en Antioquía.' }
+        },
+        {
+          id: 'bases-d12',
+          day: 12,
+          title: 'Qué es el Cristianismo',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d12-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Efesios 2** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d12-b1',
+              content: 'El cristianismo es la relación de Dios con la humanidad a través de Jesucristo. Basado en verdades históricas y la revelación bíblica, es el mensaje de la redención por gracia mediante la fe.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b12',
+              question: 'A diferencia de los sistemas de méritos, el cristianismo enseña que la salvación es:',
+              options: ['Por buen comportamiento', 'Un don gratuito de Dios por medio de la fe', 'Por conocimiento oculto'],
+              correctAnswerIndex: 1,
+              explanation: 'La gracia es el corazón del mensaje cristiano.'
+            }
+          ],
+          baseVerse: { reference: 'Efesios 2:8', text: 'Porque por gracia sois salvos por medio de la fe...' }
+        },
+        {
+          id: 'bases-d13',
+          day: 13,
+          title: 'Qué es la Religión',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d13-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Santiago 1** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d13-b1',
+              content: 'La palabra "religión" a veces se confunde con ritualismo. Sin embargo, en un sentido puro, es la expresión externa de nuestra reverencia a Dios. Santiago nos dice que la "religión pura" consiste en cuidar a los necesitados y mantenerse sin mancha del mundo.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b13',
+              question: '¿Cómo define Santiago la religión pura?',
+              options: ['Guardar todos los ritos antiguos', 'Visitar a huérfanos y viudas y guardarse sin mancha del mundo', 'Separarse físicamente de la sociedad'],
+              correctAnswerIndex: 1,
+              explanation: 'La verdadera devoción se muestra en la compasión y la pureza ética.'
+            }
+          ],
+          baseVerse: { reference: 'Santiago 1:27', text: 'La religión pura y sin mácula delante de Dios el Padre es esta...' }
+        },
+        {
+          id: 'bases-d14',
+          day: 14,
+          title: 'Satanás',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d14-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Efesios 6** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d14-b1',
+              content: 'La Biblia enseña que Satanás es un ser espiritual caído, el adversario de Dios y de los creyentes. Su objetivo es engañar, tentar y destruir, pero los cristianos tenemos victoria en Cristo.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b14',
+              question: '¿Cuál es la principal estrategia de Satanás según la Biblia?',
+              options: ['Darnos pesadillas', 'El engaño y la mentira', 'Obligarnos físicamente a pecar'],
+              correctAnswerIndex: 1,
+              explanation: 'Él es llamado el "padre de mentira".'
+            }
+          ],
+          baseVerse: { reference: '1 Pedro 5:8', text: 'Sed sobrios, y velad; porque vuestro adversario el diablo... anda alrededor buscando a quien devorar.' }
+        },
+        {
+          id: 'bases-d15',
+          day: 15,
+          title: 'La Naturaleza Vieja',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d15-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Romanos 7** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d15-b1',
+              content: 'La naturaleza vieja es nuestra inclinación pecaminosa heredada. Aunque somos nuevas criaturas en Cristo, todavía luchamos contra los deseos de la carne. Debemos "hacer morir" lo terrenal en nosotros.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b15',
+              question: '¿Qué debemos hacer con la "naturaleza vieja" según el apóstol Pablo?',
+              options: ['Mejorarla poco a poco', 'Hacerla morir y despojarnos de ella', 'Aceptarla como parte de nosotros'],
+              correctAnswerIndex: 1,
+              explanation: 'La vida cristiana es un proceso de despojarse de lo viejo y vestirse de lo nuevo.'
+            }
+          ],
+          baseVerse: { reference: 'Efesios 4:22', text: 'En cuanto a la pasada manera de vivir, despojaos del viejo hombre...' }
+        },
+        {
+          id: 'bases-d16',
+          day: 16,
+          title: 'El Mundo',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d16-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **1 Juan 2** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d16-b1',
+              content: 'Cuando la Biblia habla negativamente del "mundo", se refiere al sistema de valores y deseos que se opone a Dios. Estamos en el mundo, pero no debemos ser del mundo ni amar sus caminos.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b16',
+              question: '¿Qué sucede si alguien ama al mundo (en el sentido de sus valores pecaminosos)?',
+              options: ['Es un buen vecino', 'El amor del Padre no está en él', 'Será más famoso'],
+              correctAnswerIndex: 1,
+              explanation: 'El sistema del mundo es hostil al reino de Dios.'
+            }
+          ],
+          baseVerse: { reference: '1 Juan 2:15', text: 'No améis al mundo, ni las cosas que están en el mundo.' }
+        },
+        {
+          id: 'bases-d17',
+          day: 17,
+          title: 'La Sanidad del Alma',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d17-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Salmo 51** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d17-b1',
+              content: 'Dios no solo perdona nuestros pecados, sino que también desea sanar nuestras heridas emocionales y traumas del pasado. La sanidad interior es un proceso de permitir que la verdad de Dios reemplace las mentiras que hemos creído sobre nosotros mismos.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b17',
+              question: '¿Cuál es la clave para la sanidad del alma?',
+              options: ['Olvidar todo lo que pasó', 'Permitir que la verdad de Cristo restaure nuestra identidad y sanar heridas mediante el perdón', 'Hacer terapia secular únicamente'],
+              correctAnswerIndex: 1,
+              explanation: 'La verdad de Dios nos hace verdaderamente libres.'
+            }
+          ],
+          baseVerse: { reference: 'Salmo 147:3', text: 'Él sana a los quebrantados de corazón, y venda sus heridas.' }
+        },
+        {
+          id: 'bases-d18',
+          day: 18,
+          title: 'El Fruto del Espíritu',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d18-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Gálatas 5** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d18-b1',
+              content: 'El carácter del cristiano se evidencia por el "fruto del Espíritu". Son nueve cualidades que el Espíritu Santo desarrolla en nosotros: amor, gozo, paz, paciencia, benignidad, bondad, fe, mansedumbre y templanza.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b18',
+              question: '¿Cuántos frutos del Espíritu menciona Gálatas 5?',
+              options: ['Muchos, no hay número', 'Nueve cualidades bajo un mismo fruto', 'Doce'],
+              correctAnswerIndex: 1,
+              explanation: 'Se habla de "fruto" (singular) compuesto por diversas virtudes cristianas.'
+            }
+          ],
+          baseVerse: { reference: 'Gálatas 5:22-23', text: 'Mas el fruto del Espíritu es amor, gozo, paz...' }
+        },
+        {
+          id: 'bases-d19',
+          day: 19,
+          title: 'El Testimonio Público',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d19-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **Filipenses 2** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d19-b1',
+              content: 'Nuestra fe no debe ser privada. Estamos llamados a ser "sal de la tierra" y "luz del mundo". Nuestro comportamiento, honestidad y amor deben apuntar a otros hacia la gloria de Dios.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b19',
+              question: '¿Para qué debemos dejar que nuestra luz brille ante los hombres?',
+              options: ['Para que vean lo buenos que somos', 'Para que vean nuestras buenas obras y glorifiquen al Padre', 'Para ser populares'],
+              correctAnswerIndex: 1,
+              explanation: 'El propósito del testimonio es la gloria de Dios.'
+            }
+          ],
+          baseVerse: { reference: 'Mateo 5:16', text: 'Así alumbre vuestra luz delante de los hombres...' }
+        },
+        {
+          id: 'bases-d20',
+          day: 20,
+          title: 'La Segunda Venida',
+          blocks: [
+            {
+              type: 'note',
+              id: 'b-d20-reading',
+              content: '**Lectura Bíblica Obligatoria:**\nLeer el capítulo completo de **1 Tesalonicenses 4** antes de comenzar.'
+            },
+            {
+              type: 'text',
+              id: 'b-d20-b1',
+              content: 'La esperanza bendita del cristiano es el regreso glorioso de Jesucristo. Él volverá para juzgar al mundo, reinar con justicia y llevar a su Iglesia a vivir eternamente con Él.'
+            }
+          ],
+          finalExam: [
+            {
+              id: 'f-b20',
+              question: '¿Qué actitud debe tener el cristiano ante la venida de Cristo?',
+              options: ['Miedo y angustia', 'Vigilancia, santidad y esperanza', 'Indiferencia'],
+              correctAnswerIndex: 1,
+              explanation: 'Debemos estar preparados para su encuentro en cualquier momento.'
+            }
+          ],
+          baseVerse: { reference: 'Tito 2:13', text: 'Aguardando la esperanza bendita y la manifestación gloriosa de nuestro gran Dios y Salvador Jesucristo.' }
+        }
+      ]
     }
+
   ]
 };
