@@ -65,15 +65,10 @@ export default function App() {
             <h1 className="text-lg font-bold tracking-tight text-[#E0D7C6]">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-xs font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
          </div>
          <button 
-           onClick={() => setShowProfile(true)} 
-           className="p-1.5 text-gray-300 hover:text-white transition-colors"
+           onClick={() => setSidebarOpen(true)} 
+           className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
          >
-           <div className="relative">
-             <Menu size={24} className="opacity-0 w-0 h-0" /> {/* Spacer */}
-             <div className="absolute inset-0 flex items-center justify-center">
-                <Menu size={24} onClick={(e) => { e.stopPropagation(); setSidebarOpen(true); }} />
-             </div>
-           </div>
+           <Menu size={24} />
          </button>
       </div>
 

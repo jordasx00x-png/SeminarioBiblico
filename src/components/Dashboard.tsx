@@ -117,11 +117,11 @@ function CourseCard({ course, progress, onSelectCourse }: { key?: React.Key, cou
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
   
   return (
-    <div 
+    <button 
       onClick={() => onSelectCourse(course.id)}
-      className="bg-white border border-[#E0D7C6] rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#1A2533] cursor-pointer transition-all flex flex-col h-full group"
+      className="bg-white border border-[#E0D7C6] rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#1A2533] cursor-pointer transition-all flex flex-col h-full group text-left w-full"
     >
-      <div className="p-6 md:p-8 flex-1">
+      <div className="p-6 md:p-8 flex-1 w-full">
          <div className="text-[10px] md:text-xs font-sans text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
             <span className="text-[#7F1D1D] font-bold">Mínimo 3 Meses</span>
          </div>
@@ -139,7 +139,7 @@ function CourseCard({ course, progress, onSelectCourse }: { key?: React.Key, cou
          </div>
       </div>
       
-      <div className="bg-gray-50 border-t border-[#E0D7C6] p-4 flex justify-between items-center px-6 md:px-8 group-hover:bg-white transition-colors">
+      <div className="bg-gray-50 border-t border-[#E0D7C6] p-4 flex justify-between items-center px-6 md:px-8 group-hover:bg-white transition-colors w-full">
          <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-sans">
             {total} Clases + {total} Exámenes
          </div>
@@ -147,6 +147,6 @@ function CourseCard({ course, progress, onSelectCourse }: { key?: React.Key, cou
             Ver Módulo <PlayCircle size={14} className="opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
          </div>
       </div>
-    </div>
+    </button>
   );
 }

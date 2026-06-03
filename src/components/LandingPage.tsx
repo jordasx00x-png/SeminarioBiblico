@@ -17,11 +17,8 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
           </div>
         </div>
         <button 
-          onClick={(e) => {
-            e.preventDefault();
-            onSignIn();
-          }}
-          className="bg-white text-[#1A2533] hover:bg-[#E0D7C6] active:scale-95 px-5 py-2.5 rounded text-xs font-bold tracking-widest uppercase transition-colors flex items-center gap-2 shadow-sm font-sans relative z-20 cursor-pointer"
+          onClick={onSignIn}
+          className="bg-white text-[#1A2533] hover:bg-[#E0D7C6] active:scale-95 px-5 py-2.5 rounded text-xs font-bold tracking-widest uppercase transition-all flex items-center gap-2 shadow-sm font-sans relative z-20 cursor-pointer"
         >
           <LogIn size={16} />
           <span className="hidden sm:inline">Iniciar Sesión</span>
@@ -45,10 +42,7 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
                Una plataforma educativa diseñada para profundizar en las Escrituras a través del método histórico-crítico, teología sistemática y herramientas ministeriales avanzadas.
              </p>
              <button 
-              onClick={(e) => {
-                e.preventDefault();
-                onSignIn();
-              }}
+              onClick={onSignIn}
               className="w-full sm:w-auto bg-[#7F1D1D] hover:bg-red-800 active:scale-95 text-white px-8 py-4 rounded text-sm font-bold tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl md:hover:-translate-y-1 font-sans relative z-20 cursor-pointer"
             >
               Comenzar Estudios
@@ -149,11 +143,8 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
                 </div>
                 
                 <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onSignIn();
-                  }}
-                  className="w-full mt-6 bg-[#1A2533] hover:bg-[#2C3E50] active:scale-95 text-white py-3 rounded text-xs font-bold tracking-widest uppercase transition-colors font-sans relative z-20 cursor-pointer"
+                  onClick={onSignIn}
+                  className="w-full mt-6 bg-[#1A2533] hover:bg-[#2C3E50] active:scale-95 text-white py-3 rounded text-xs font-bold tracking-widest uppercase transition-all font-sans relative z-20 cursor-pointer"
                 >
                   Continuar Aprendizaje
                 </button>
