@@ -1,5 +1,6 @@
 import React from 'react';
 import { Quote, BookMarked, Info } from 'lucide-react';
+import { TextWithGlossary } from './FormattedContent';
 
 interface AcademicPanelProps {
   commentaries: { author: string; text: string }[];
@@ -23,9 +24,9 @@ export function AcademicPanel({ commentaries }: AcademicPanelProps) {
                 <Quote size={20} className="text-[#7F1D1D] opacity-40 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="flex-1">
-                <p className="text-[#2C2C2C] font-serif italic text-base leading-relaxed border-l-2 border-[#F0E6D2] pl-4 mb-2">
-                  "{item.text}"
-                </p>
+                <div className="text-[#2C2C2C] font-serif italic text-base leading-relaxed border-l-2 border-[#F0E6D2] pl-4 mb-2">
+                  "<TextWithGlossary text={item.text} />"
+                </div>
                 <div className="pl-4 flex items-center gap-2">
                   <div className="h-[1px] w-4 bg-[#7F1D1D] opacity-30"></div>
                   <span className="text-[10px] font-bold text-[#7F1D1D] uppercase tracking-widest">

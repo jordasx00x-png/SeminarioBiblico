@@ -37,3 +37,7 @@ export type Course = {
 export type UserProgress = {
   completedLessons: Record<string, { score: number; completedAt: string }>;
 };
+
+export type Database = {
+  courses: Course[];
+};

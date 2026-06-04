@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Lesson, Course, UserProgress } from '../types';
-import { formatMD } from '../lib/utils';
 import { FinalExam } from './FinalExam';
 import { LessonNotes } from './LessonNotes';
 import { AcademicPanel } from './AcademicPanel';
 import { ReinforcementVerses } from './ReinforcementVerses';
 import { LessonAssignments } from './LessonAssignments';
-import { ArrowLeft, BookOpen, CheckCircle2 } from 'lucide-react';
+import { ReflectionActivities } from './ReflectionActivities';
+import { FormattedContent } from './FormattedContent';
+import {ArrowLeft, BookOpen, CheckCircle2 } from 'lucide-react';
 
 interface LessonViewerProps {
   key?: string | number;
@@ -113,9 +114,9 @@ export function LessonViewer({ lesson, course, progress, onComplete, onBack }: L
 
                   return (
                     <div key={block.id} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                      <div 
+                      <FormattedContent 
                         className={`text-gray-700 leading-relaxed text-lg ${isLastUnlockedText && !showExam ? 'border-l-4 border-[#7F1D1D] pl-6 py-2 italic bg-gray-50/50' : ''}`}
-                        dangerouslySetInnerHTML={{ __html: formatMD(block.content) }}
+                        content={block.content}
                       />
                       {isLastUnlockedText && !showExam && (
                          <div className="mt-8 flex justify-center gap-4 flex-wrap pb-4 font-sans">
@@ -165,9 +166,9 @@ export function LessonViewer({ lesson, course, progress, onComplete, onBack }: L
                           <CheckCircle2 size={16} />
                           Puntos Clave para tu Libreta
                         </h4>
-                        <div 
+                        <FormattedContent 
                           className="text-[#1A2533] leading-relaxed font-sans text-base prose prose-sm max-w-none"
-                          dangerouslySetInnerHTML={{ __html: formatMD(block.content) }}
+                          content={block.content}
                         />
                       </div>
                       
@@ -278,6 +279,8 @@ export function LessonViewer({ lesson, course, progress, onComplete, onBack }: L
           {lesson.assignments && lesson.assignments.length > 0 && (
             <LessonAssignments lessonId={lesson.id} courseId={course.id} assignments={lesson.assignments} />
           )}
+
+          <ReflectionActivities lessonId={lesson.id} courseId={course.id} />
 
           <LessonNotes lessonId={lesson.id} courseId={course.id} />
 
