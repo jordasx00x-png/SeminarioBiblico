@@ -6,6 +6,8 @@ import { pentateucoCourse } from './data/courses/pentateuco';
 import { historicosCourse, poeticosCourse } from './data/courses/historicos_poeticos';
 import { profetasCourse, evangeliosCourse } from './data/courses/profetas_nuevo_testamento';
 import { fundamentosCourse } from './data/courses/fundamentos';
+import { pabloCourse } from './data/courses/pablo';
+import { licenciaturaCourses } from './data/courses/licenciatura';
 
 export const mockDatabase: Database = {
   courses: [
@@ -17,9 +19,11 @@ export const mockDatabase: Database = {
     poeticosCourse,
     profetasCourse,
     evangeliosCourse,
+    pabloCourse,
     {
       ...fundamentosCourse,
       id: 'bases-fundamentales'
-    }
+    },
+    ...licenciaturaCourses
   ]
 };

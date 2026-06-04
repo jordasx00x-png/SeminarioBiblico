@@ -5,11 +5,17 @@ export function useProgress() {
   const [progress, setProgress] = useState<UserProgress>(() => {
     try {
       const saved = localStorage.getItem('seminario_progress');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          completedLessons: parsed.completedLessons || {},
+          completedBlockExams: parsed.completedBlockExams || {}
+        };
+      }
     } catch(e) {
       console.warn("Could not load progress", e);
     }
-    return { completedLessons: {} };
+    return { completedLessons: {}, completedBlockExams: {} };
   });
 
   useEffect(() => {
@@ -30,5 +36,26 @@ export function useProgress() {
     }));
   };
 
-  return { progress, markCompleted };
+  const markBlockExamCompleted = (milestone: number, score: number) => {
+    setProgress((prev) => ({
+      ...prev,
+      completedBlockExams: {
+        ...(prev.completedBlockExams || {}),
+        [milestone]: { score, completedAt: new Date().toISOString() }
+      }
+    }));
+  };
+
+  const resetFirstLesson = (firstLessonId: string) => {
+    setProgress((prev) => {
+      const newCompleted = { ...prev.completedLessons };
+      delete newCompleted[firstLessonId];
+      return {
+        ...prev,
+        completedLessons: newCompleted
+      };
+    });
+  };
+
+  return { progress, markCompleted, markBlockExamCompleted, resetFirstLesson };
 }

@@ -29,13 +29,14 @@ export type Lesson = {
 export type Course = {
   id: string;
   title: string;
-  type: 'BIBLE_STUDY' | 'SPECIALIZED';
+  type: 'BIBLE_STUDY' | 'SPECIALIZED' | 'LICENCIATURA';
   description: string;
   lessons: Lesson[];
 };
 
 export type UserProgress = {
   completedLessons: Record<string, { score: number; completedAt: string }>;
+  completedBlockExams?: Record<number, { score: number; completedAt: string }>;
 };
 
 export type Database = {

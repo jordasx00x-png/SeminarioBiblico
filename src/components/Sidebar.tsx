@@ -1,5 +1,5 @@
 import { Course, UserProgress } from '../types';
-import { BookOpen, Award, CheckCircle, LogOut, LayoutDashboard, Settings } from 'lucide-react';
+import { BookOpen, Award, CheckCircle, LogOut, LayoutDashboard, Settings, X } from 'lucide-react';
 import { User } from 'firebase/auth';
 
 interface SidebarProps {
@@ -13,16 +13,42 @@ interface SidebarProps {
   customProfile?: {fullName?: string; email?: string; phoneNumber?: string};
   onSignOut?: () => void;
   onOpenProfile?: () => void;
+  onClose?: () => void;
 }
 
-export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesson, progress, isOpen, user, customProfile, onSignOut, onOpenProfile }: SidebarProps) {
+export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesson, progress, isOpen, user, customProfile, onSignOut, onOpenProfile, onClose }: SidebarProps) {
   const bibleStudies = courses.filter(c => c.type === 'BIBLE_STUDY');
   const specialized = courses.filter(c => c.type === 'SPECIALIZED');
+
+  const basicCourses = courses.filter(c => c.type !== 'LICENCIATURA');
+  const totalBasicLessons = basicCourses.reduce((sum, c) => sum + c.lessons.length, 0);
+  const completedBasicLessons = basicCourses.reduce((sum, c) => {
+    return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
+  }, 0);
+  const allBasicCompleted = completedBasicLessons >= totalBasicLessons && totalBasicLessons > 0;
+  const isLicenciaturaUnlocked = allBasicCompleted || localStorage.getItem('bypass_licenciatura_unlock') === 'true';
 
   const isDashboardActive = activeCourseId === null && activeLessonId === null;
 
   return (
     <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#1A2533] text-white border-r border-[#E0D7C6] transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none`}>
+      
+      {/* Mobile-only menu header with Close button */}
+      <div className="p-5 border-b border-[#2C3E50] flex items-center justify-between md:hidden bg-[#151D28]">
+        <h1 className="text-base font-bold tracking-tight text-[#E0D7C6]">
+          SEMINARIO<br/><span className="text-[10px] font-normal opacity-60 uppercase tracking-widest font-sans">Teológico Digital</span>
+        </h1>
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="p-1.5 text-gray-400 hover:text-white transition-colors bg-[#1A2533]/50 rounded-lg border border-[#2C3E50]"
+            aria-label="Cerrar menú"
+          >
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
       <div className="p-6 border-b border-[#2C3E50] hidden md:block">
         <h1 className="text-xl font-bold tracking-tight text-[#E0D7C6]">
           SEMINARIO<br/><span className="text-sm font-normal opacity-80 uppercase tracking-[0.2em] font-sans">Teológico Digital</span>
@@ -38,7 +64,7 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
              }`}
            >
              <LayoutDashboard className={`w-4 h-4 ${isDashboardActive ? 'text-white' : 'text-[#E0D7C6]'}`} />
-             <span className="font-medium">Panel Académico</span>
+             <span className="font-medium">Inicio (Panel Académico)</span>
            </button>
         </div>
         
@@ -93,7 +119,7 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
               )}
               <div className="flex flex-col">
                  <div className="text-xs font-bold text-white max-w-[120px] truncate">{customProfile?.fullName || user?.displayName || 'Usuario'}</div>
-                 <div className="text-[10px] text-gray-400">Nivel: Avanzado</div>
+                 <div className="text-[10px] text-gray-400">{isLicenciaturaUnlocked ? 'Rango: Licenciado 🎓' : 'Nivel: Bachillerato'}</div>
               </div>
            </div>
            <div className="flex items-center gap-2">

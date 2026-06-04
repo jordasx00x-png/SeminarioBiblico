@@ -4,6 +4,7 @@ import { useProgress } from './hooks/useProgress';
 import { useAuth } from './hooks/useAuth';
 import { Sidebar } from './components/Sidebar';
 import { LessonViewer } from './components/LessonViewer';
+import { BlockExamModal } from './components/BlockExamModal';
 import { Dashboard } from './components/Dashboard';
 import { CourseOverview } from './components/CourseOverview';
 import { LandingPage } from './components/LandingPage';
@@ -17,7 +18,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string}>({});
-  const { progress, markCompleted } = useProgress();
+  const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Scroll to top when course or lesson changes
@@ -53,6 +54,17 @@ export default function App() {
   const activeCourse = mockDatabase.courses.find(c => c.id === activeCourseId);
   const activeLesson = activeCourse?.lessons.find(l => l.id === activeLessonId);
 
+  // Check if there is any pending block exam milestone
+  const completedCount = Object.keys(progress.completedLessons).length;
+  const pendingMilestone = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30].find(
+    m => completedCount >= m && (!progress.completedBlockExams || !progress.completedBlockExams[m])
+  );
+
+  // Find which course to apply the retake rule to
+  const lastActiveCourse = activeCourse || mockDatabase.courses.find(c => 
+    c.lessons.some(l => progress.completedLessons[l.id])
+  ) || mockDatabase.courses[0];
+
   return (
     <div className="min-h-screen bg-[#FDFCFB] text-[#2C2C2C] font-serif flex flex-col md:flex-row relative">
       
@@ -65,10 +77,10 @@ export default function App() {
             <h1 className="text-lg font-bold tracking-tight text-[#E0D7C6]">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-xs font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
          </div>
          <button 
-           onClick={() => setSidebarOpen(true)} 
+           onClick={() => setSidebarOpen(prev => !prev)} 
            className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
          >
-           <Menu size={24} />
+           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
          </button>
       </div>
 
@@ -87,6 +99,7 @@ export default function App() {
          customProfile={customProfile}
          onSignOut={signOut}
          onOpenProfile={() => setShowProfile(true)}
+         onClose={() => setSidebarOpen(false)}
       />
 
       {/* Overlay to catch clicks off the sidebar in mobile view */}
@@ -144,11 +157,30 @@ export default function App() {
          </div>
       </main>
 
+      {pendingMilestone && (
+        <BlockExamModal 
+          milestone={pendingMilestone}
+          courseTitle={lastActiveCourse.title}
+          firstLessonTitle={lastActiveCourse.lessons[0]?.title || 'Día 1'}
+          onPass={(score) => {
+            markBlockExamCompleted(pendingMilestone, score);
+          }}
+          onFail={() => {
+            if (lastActiveCourse?.lessons[0]) {
+              resetFirstLesson(lastActiveCourse.lessons[0].id);
+              setActiveCourseId(lastActiveCourse.id);
+              setActiveLessonId(lastActiveCourse.lessons[0].id);
+            }
+          }}
+        />
+      )}
+
       <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E0D7C6] h-16 flex items-center justify-around z-40 px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button 
           onClick={() => {
             setActiveCourseId(null);
             setActiveLessonId(null);
+            setSidebarOpen(false);
           }}
           className={`flex flex-col items-center gap-1 transition-colors ${!activeCourseId ? 'text-[#7F1D1D]' : 'text-gray-400'}`}
         >
@@ -158,7 +190,10 @@ export default function App() {
 
         {activeCourseId && (
           <button 
-            onClick={() => setActiveLessonId(null)}
+            onClick={() => {
+              setActiveLessonId(null);
+              setSidebarOpen(false);
+            }}
             className={`flex flex-col items-center gap-1 transition-colors ${activeCourseId && !activeLessonId ? 'text-[#7F1D1D]' : 'text-gray-400'}`}
           >
             <BookOpen size={20} />
@@ -167,11 +202,11 @@ export default function App() {
         )}
 
         <button 
-          onClick={() => setSidebarOpen(true)}
-          className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#1A2533] transition-colors"
+          onClick={() => setSidebarOpen(prev => !prev)}
+          className={`flex flex-col items-center gap-1 transition-colors ${sidebarOpen ? 'text-[#7F1D1D]' : 'text-gray-400'}`}
         >
-          <Menu size={20} />
-          <span className="text-[10px] font-bold uppercase tracking-tighter">Menú</span>
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          <span className="text-[10px] font-bold uppercase tracking-tighter">{sidebarOpen ? 'Cerrar' : 'Menú'}</span>
         </button>
       </footer>
     </div>

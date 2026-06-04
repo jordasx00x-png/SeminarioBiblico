@@ -3,6 +3,7 @@ import { Course, UserProgress } from '../types';
 import { User } from 'firebase/auth';
 import { BookOpen, CheckCircle, Lock, PlayCircle, ArrowLeft, Award } from 'lucide-react';
 import { Certificate } from './Certificate';
+import { getLessonTitleForDay } from '../data/syllabusTitles';
 
 interface CourseOverviewProps {
   course: Course;
@@ -17,8 +18,9 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
   const [showCertificate, setShowCertificate] = useState(false);
 
   const total = 90;
-  const completed = course.lessons.filter(l => progress.completedLessons[l.id]).length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const completedReal = course.lessons.filter(l => progress.completedLessons[l.id]).length;
+  const percentage = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * 100) : 0;
+  const completedScaled = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * total) : 0;
 
   return (
     <div className="flex flex-col min-h-full font-serif text-[#2C2C2C] bg-[#FDFCFB]">
@@ -57,7 +59,7 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
 
         <div className="bg-white border border-[#E0D7C6] rounded-xl p-6 shadow-sm mb-10 animate-in fade-in slide-in-from-bottom-6 duration-500">
            <div className="flex justify-between items-end mb-2">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans">Progreso General ({completed}/{total})</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans">Progreso General ({completedScaled}/{total})</span>
               <span className="text-sm font-bold text-[#1A2533]">{percentage}%</span>
            </div>
            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-4">
@@ -217,7 +219,7 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
                                 {course.type === 'SPECIALIZED' ? 'Unidad' : 'Día'} {dayNumber}
                               </div>
                               <h3 className="font-bold text-base md:text-lg leading-tight text-gray-500">
-                                Contenido En Preparación
+                                {getLessonTitleForDay(course.id, dayNumber)}
                               </h3>
                            </div>
                         </div>

@@ -402,6 +402,50 @@ const REFLECTIONS_DB: Record<string, LessonReflectionData> = {
         placeholder: 'Escribe un compromiso concreto para manifestar el evangelio con tus seres más queridos esta misma semana...'
       }
     ]
+  },
+  'pablo-day1': {
+    questions: [
+      {
+        id: 'ref-pablo1-mc',
+        type: 'multiple-choice',
+        question: '¿Cuál es el glorioso veredicto de la Justificación por la fe sola según Romanos 3 y 4?',
+        options: [
+          'Un veredicto condicional de que aprobaremos la justificación final solo si no volvemos a tropezar jamás.',
+          'Una absolución forense y total donde Dios carga nuestros pecados en Cristo en la Cruz e imputa legalmente Su justicia perfecta a nuestra cuenta por la fe sola.',
+          'Que el ser humano posee una chispa de bondad divina inherente que se despierta con el bautismo.',
+          'La creencia de que podemos continuar pecando deliberadamente sin consecuencias morales morales.'
+        ],
+        correctIdx: 1
+      },
+      {
+        id: 'ref-pablo1-open',
+        type: 'open',
+        question: 'En Gálatas 2:20, Pablo dice: "Con Cristo estoy juntamente crucificado, y ya no vivo yo...". Reflexiona sobre tu vida cotidiana de fe: ¿En qué momentos o luchas sueles confiar en tus propias obras de mérito legalista para ser aceptado por Dios o por los demás, en lugar de descansar plenamente en Su favor inmerecido?',
+        placeholder: 'Escribe tu honesto auto-examen sobre el descanso de la fe frente al legalismo moral...'
+      }
+    ]
+  },
+  'pablo-day2': {
+    questions: [
+      {
+        id: 'ref-pablo2-mc',
+        type: 'multiple-choice',
+        question: 'En Filipenses 2:5-11 (la Kenosis), ¿en qué consiste la actitud de humildad que Pablo nos insta a imitar de Jesucristo?',
+        options: [
+          'Fingir ser ignorantes o inferiores para evitar que nos confíen responsabilidades en el liderazgo de la iglesia.',
+          'Despojarnos voluntariamente de la autopreservación del orgullo o de reclamar nuestros propios "derechos" de manera egoísta, sirviendo y amparando abnegadamente a los demás.',
+          'Reclamar un estatus civil de superioridad académica ante nuestros enemigos teológicos.',
+          'Evitar todo tipo de acción pastoral que requiera sacrificio físico habitual.'
+        ],
+        correctIdx: 1
+      },
+      {
+        id: 'ref-pablo2-open',
+        type: 'open',
+        question: 'Colosenses 1 proclama que Cristo es la imagen del Dios invisible, el soberano absoluto sobre toda la creación, y que en Él todo subsiste de forma eterna. Frente a las incertidumbres futuras, miedos cotidianos o crisis existenciales, ¿de qué manera te infunde paz el saber que nada se sale del señorío providencial de tu Salvador?',
+        placeholder: 'Escribe tu oración o reflexión confiando tus temores al Verbo Encarnado...'
+      }
+    ]
   }
 };
 
