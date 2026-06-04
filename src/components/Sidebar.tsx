@@ -31,17 +31,17 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
   const isDashboardActive = activeCourseId === null && activeLessonId === null;
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#1A2533] text-white border-r border-[#E0D7C6] transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none`}>
+    <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#1A2533] dark:bg-zinc-950 text-white border-r border-[#E0D7C6] dark:border-zinc-800 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-all duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none`}>
       
       {/* Mobile-only menu header with Close button */}
-      <div className="p-5 border-b border-[#2C3E50] flex items-center justify-between md:hidden bg-[#151D28]">
+      <div className="p-5 border-b border-[#2C3E50] dark:border-zinc-800 flex items-center justify-between md:hidden bg-[#151D28] dark:bg-zinc-900">
         <h1 className="text-base font-bold tracking-tight text-[#E0D7C6]">
           SEMINARIO<br/><span className="text-[10px] font-normal opacity-60 uppercase tracking-widest font-sans">Teológico Digital</span>
         </h1>
         {onClose && (
           <button 
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-white transition-colors bg-[#1A2533]/50 rounded-lg border border-[#2C3E50]"
+            className="p-1.5 text-gray-400 hover:text-white transition-colors bg-[#1A2533]/50 dark:bg-zinc-800 rounded-lg border border-[#2C3E50] dark:border-zinc-700"
             aria-label="Cerrar menú"
           >
             <X size={18} />
@@ -49,33 +49,22 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
         )}
       </div>
 
-      <div className="p-6 border-b border-[#2C3E50] hidden md:block">
+      <div className="p-6 border-b border-[#2C3E50] dark:border-zinc-800 hidden md:block">
         <h1 className="text-xl font-bold tracking-tight text-[#E0D7C6]">
           SEMINARIO<br/><span className="text-sm font-normal opacity-80 uppercase tracking-[0.2em] font-sans">Teológico Digital</span>
         </h1>
       </div>
       
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
-        <div className="mb-4 space-y-1.5">
+        <div className="mb-4">
           <button 
              onClick={() => onSelectLesson(null, null)}
              className={`w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center gap-3 ${
-               isDashboardActive ? 'bg-[#7F1D1D] text-white shadow-lg' : 'text-gray-300 hover:bg-[#2C3E50] hover:text-white'
+               isDashboardActive ? 'bg-[#7F1D1D] text-white shadow-lg' : 'text-gray-300 hover:bg-[#2C3E50] dark:hover:bg-zinc-800 hover:text-white'
              }`}
            >
              <LayoutDashboard className={`w-4 h-4 ${isDashboardActive ? 'text-white' : 'text-[#E0D7C6]'}`} />
              <span className="font-medium">Inicio (Panel Académico)</span>
-           </button>
-
-           <button 
-              onClick={() => {
-                if (onOpenProfile) onOpenProfile();
-                if (onClose) onClose();
-              }}
-              className="w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center gap-3 text-gray-300 hover:bg-[#2C3E50] hover:text-white"
-            >
-              <Settings className="w-4 h-4 text-[#E0D7C6]" />
-              <span className="font-medium">Configurar Cuenta / Perfil</span>
            </button>
         </div>
         
@@ -85,7 +74,7 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
            
            return (
              <div className="pt-2 animate-in fade-in duration-300">
-               <div className="px-3 py-2 text-[10px] uppercase tracking-widest text-[#8E9EAD] font-sans">
+               <div className="px-3 py-2 text-[10px] uppercase tracking-widest text-[#8E9EAD] dark:text-zinc-500 font-sans">
                  Módulo Actual
                </div>
                <div className="mb-4">
@@ -99,11 +88,11 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
                          <button 
                            onClick={() => onSelectLesson(activeCourse.id, lesson.id)}
                            className={`w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center justify-between ${
-                             isActive ? 'bg-[#7F1D1D] text-white shadow-lg' : 'text-gray-400 hover:bg-[#2C3E50] hover:text-white'
+                             isActive ? 'bg-[#7F1D1D] text-white shadow-lg' : 'text-gray-400 hover:bg-[#2C3E50] dark:hover:bg-zinc-800 hover:text-white'
                            }`}
                          >
                            <span className="truncate flex items-center gap-3">
-                             <BookOpen className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                             <BookOpen className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-gray-500 dark:text-zinc-500'}`} />
                              <span className="truncate">{activeCourse.type === 'SPECIALIZED' ? 'Unidad' : 'Día'} {lesson.day}</span>
                            </span>
                            {isCompleted && <CheckCircle size={14} className={`shrink-0 ml-2 ${isActive ? 'text-white/80' : 'text-emerald-400/80'}`} />}
@@ -118,14 +107,14 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
         })()}
       </nav>
       
-      <div className="p-4 bg-[#111A24] border-t border-[#2C3E50]">
+      <div className="p-4 bg-[#111A24] dark:bg-zinc-900 border-t border-[#2C3E50] dark:border-zinc-800">
          <div className="flex items-center justify-between mb-3">
            <div className="flex items-center gap-3">
               {user?.photoURL ? (
                  <img src={user.photoURL} alt="Avatar" className="w-8 h-8 rounded" referrerPolicy="no-referrer" />
               ) : (
                  <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white">
-                   {(customProfile?.fullName || user?.displayName || 'U').charAt(0).toUpperCase()}
+                   {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
                  </div>
               )}
               <div className="flex flex-col">

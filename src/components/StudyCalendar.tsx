@@ -49,13 +49,15 @@ export function StudyCalendar({ progress, totalLessons }: StudyCalendarProps) {
               <Target size={20} className="text-[#D1B17F]" />
               Plan de Estudio Personalizado
             </h3>
-            <p className="text-xs text-gray-400">Objetivo: Completar el Seminario en 90 días (3 meses)</p>
+            <p className="text-xs text-gray-400">
+              Objetivo: Completar el Seminario en {totalLessons} días ({Math.round(totalLessons / 30)} meses)
+            </p>
           </div>
           
           <div className="flex items-center gap-8">
             <div className="text-center">
               <p className="text-[10px] uppercase tracking-tighter text-gray-400 mb-1">Completado</p>
-              <p className="text-2xl font-bold text-[#D1B17F]">{completedCount}<span className="text-sm font-normal text-gray-500">/90</span></p>
+              <p className="text-2xl font-bold text-[#D1B17F]">{completedCount}<span className="text-sm font-normal text-gray-500">/{totalLessons}</span></p>
             </div>
             <div className="h-10 w-[1px] bg-gray-700/50"></div>
             <div className="text-center">

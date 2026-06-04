@@ -32,6 +32,7 @@ export type Course = {
   type: 'BIBLE_STUDY' | 'SPECIALIZED' | 'LICENCIATURA';
   description: string;
   lessons: Lesson[];
+  durationMonths?: number;
 };
 
 export type UserProgress = {

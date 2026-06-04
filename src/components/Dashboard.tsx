@@ -9,10 +9,9 @@ interface DashboardProps {
   courses: Course[];
   progress: UserProgress;
   onSelectCourse: (courseId: string) => void;
-  customProfile?: {fullName?: string; email?: string; phoneNumber?: string};
 }
 
-export function Dashboard({ user, courses, progress, onSelectCourse, customProfile }: DashboardProps) {
+export function Dashboard({ user, courses, progress, onSelectCourse }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'courses' | 'calendar' | 'grades'>('courses');
   const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({});
   
@@ -129,7 +128,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse, customProfi
           Panel Académico
         </h1>
         <p className="text-gray-600 font-sans mt-4 text-sm md:text-base">
-          Bienvenido nuevamente, <span className="font-bold text-[#1A2533]">{customProfile?.fullName || user?.displayName || 'Estudioso'}</span>. Consulta tu progreso y selecciona el módulo a cursar el día de hoy.
+          Bienvenido nuevamente, <span className="font-bold text-[#1A2533]">{user?.displayName || 'Estudioso'}</span>. Consulta tu progreso y selecciona el módulo a cursar el día de hoy.
         </p>
       </div>
 
@@ -304,7 +303,13 @@ export function Dashboard({ user, courses, progress, onSelectCourse, customProfi
         </div>
       ) : activeTab === 'calendar' ? (
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-          <StudyCalendar progress={progress} totalLessons={90} />
+          {(() => {
+            const activeCourseFromProgress = courses.find(c => c.lessons.some(l => progress.completedLessons[l.id]));
+            const calendarTotalLessons = activeCourseFromProgress?.durationMonths 
+              ? activeCourseFromProgress.durationMonths * 30 
+              : 90;
+            return <StudyCalendar progress={progress} totalLessons={calendarTotalLessons} />;
+          })()}
         </div>
       ) : (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -316,7 +321,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse, customProfi
               </span>
               <h2 className="text-2xl md:text-3xl font-serif font-bold text-white tracking-tight">Boleta de Calificaciones Oficial</h2>
               <p className="text-xs text-gray-300 font-sans max-w-xl">
-                Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{customProfile?.fullName || user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño, aciertos en exámenes comprensivos y convalidaciones del tribunal docente.
+                Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño, aciertos en exámenes comprensivos y convalidaciones del tribunal docente.
               </p>
             </div>
             
@@ -546,7 +551,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse, customProfi
 }
 
 function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { key?: React.Key, course: Course, progress: UserProgress, onSelectCourse: (courseId: string) => void, isLocked?: boolean }) {
-  const total = 90;
+  const total = course.durationMonths ? course.durationMonths * 30 : 90;
   const completedReal = course.lessons.filter(l => progress.completedLessons[l.id]).length;
   const percentage = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * 100) : 0;
   const completedScaled = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * total) : 0;
@@ -563,8 +568,10 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
     >
       <div className="p-6 md:p-8 flex-1 w-full relative">
          <div className="text-[10px] md:text-xs font-sans text-gray-500 uppercase tracking-widest mb-2 flex items-center justify-between gap-2">
-            <span className={course.type === 'LICENCIATURA' ? 'text-[#D97706] font-bold' : 'text-[#7F1D1D] font-bold'}>
-              {course.type === 'LICENCIATURA' ? 'Módulo de Licenciatura' : 'Mínimo 3 Meses'}
+            <span className={course.type === 'LICENCIATURA' ? 'text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200' : 'text-[#7F1D1D] font-bold'}>
+              {course.type === 'LICENCIATURA' 
+                ? `Licenciatura • ${course.durationMonths || 6} Meses` 
+                : 'Mínimo 3 Meses'}
             </span>
             {isLocked && (
               <span className="flex items-center gap-1 text-[#92400E] font-bold bg-amber-50 px-2.5 py-0.5 rounded text-[9px] border border-amber-200">

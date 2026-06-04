@@ -17,13 +17,13 @@ interface CourseOverviewProps {
 export function CourseOverview({ course, progress, user, customProfile, onSelectLesson, onBack }: CourseOverviewProps) {
   const [showCertificate, setShowCertificate] = useState(false);
 
-  const total = 90;
+  const total = course.durationMonths ? course.durationMonths * 30 : 90;
   const completedReal = course.lessons.filter(l => progress.completedLessons[l.id]).length;
   const percentage = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * 100) : 0;
   const completedScaled = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * total) : 0;
 
   return (
-    <div className="flex flex-col min-h-full font-serif text-[#2C2C2C] bg-[#FDFCFB]">
+    <div className="flex flex-col min-h-full font-serif text-[#2C2C2C] dark:text-stone-300 bg-[#FDFCFB] dark:bg-[#121212] transition-colors">
       {showCertificate && (
         <Certificate 
           course={course} 
@@ -32,10 +32,10 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
           onClose={() => setShowCertificate(false)} 
         />
       )}
-      <header className="h-16 bg-white border-b border-[#E0D7C6] px-4 md:px-8 flex items-center shadow-sm sticky top-0 z-20 shrink-0">
+      <header className="h-16 bg-white dark:bg-zinc-900 border-b border-[#E0D7C6] dark:border-zinc-800 px-4 md:px-8 flex items-center shadow-sm sticky top-0 z-20 shrink-0 transition-colors">
          <button 
             onClick={onBack}
-            className="flex items-center gap-2 text-gray-500 hover:text-[#1A2533] transition-colors font-sans text-xs md:text-sm font-semibold uppercase tracking-widest"
+            className="flex items-center gap-2 text-gray-500 hover:text-[#1A2533] dark:hover:text-stone-100 transition-colors font-sans text-xs md:text-sm font-semibold uppercase tracking-widest"
           >
             <ArrowLeft size={16} />
             <span className="hidden sm:inline">Volver al Panel</span>
@@ -44,32 +44,32 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
 
       <div className="p-6 md:p-10 max-w-4xl mx-auto w-full flex-1 pb-24">
         <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <div className="text-[10px] md:text-xs font-sans text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-             <span className="bg-[#1A2533] text-[#E0D7C6] px-2 py-0.5 rounded">Módulo Activo</span>
+           <div className="text-[10px] md:text-xs font-sans text-gray-500 dark:text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+             <span className="bg-[#1A2533] dark:bg-zinc-700 text-[#E0D7C6] px-2 py-0.5 rounded">Módulo Activo</span>
              <span>•</span>
-             <span>Duración Sugerida: 3 Meses Mínimo</span>
+             <span>{course.durationMonths ? `Duración Sugerida: ${course.durationMonths} Meses` : 'Duración Sugerida: 3 Meses Mínimo'}</span>
            </div>
-           <h1 className="text-3xl md:text-5xl font-bold text-[#1A2533] mb-4 leading-tight">
+           <h1 className="text-3xl md:text-5xl font-bold text-[#1A2533] dark:text-stone-100 mb-4 leading-tight">
              {course.title}
            </h1>
-           <p className="text-gray-600 font-sans mt-4 text-sm md:text-base md:text-lg leading-relaxed max-w-2xl border-l-4 border-[#7F1D1D] pl-4">
+           <p className="text-gray-600 dark:text-stone-400 font-sans mt-4 text-sm md:text-base md:text-lg leading-relaxed max-w-2xl border-l-4 border-[#7F1D1D] dark:border-red-800 pl-4">
              {course.description}
            </p>
         </div>
 
-        <div className="bg-white border border-[#E0D7C6] rounded-xl p-6 shadow-sm mb-10 animate-in fade-in slide-in-from-bottom-6 duration-500">
+        <div className="bg-white dark:bg-zinc-900 border border-[#E0D7C6] dark:border-zinc-800 rounded-xl p-6 shadow-sm mb-10 animate-in fade-in slide-in-from-bottom-6 duration-500 transition-colors">
            <div className="flex justify-between items-end mb-2">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans">Progreso General ({completedScaled}/{total})</span>
-              <span className="text-sm font-bold text-[#1A2533]">{percentage}%</span>
+              <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-sans">Progreso General ({completedScaled}/{total})</span>
+              <span className="text-sm font-bold text-[#1A2533] dark:text-stone-100">{percentage}%</span>
            </div>
-           <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-4">
-             <div className="h-full bg-[#7F1D1D] rounded-full transition-all duration-500" style={{ width: `${percentage}%` }}></div>
+           <div className="h-2 w-full bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-4">
+             <div className="h-full bg-[#7F1D1D] dark:bg-red-800 rounded-full transition-all duration-500" style={{ width: `${percentage}%` }}></div>
            </div>
            {percentage === 100 && (
-             <div className="pt-4 border-t border-[#E0D7C6] flex justify-end">
+             <div className="pt-4 border-t border-[#E0D7C6] dark:border-zinc-800 flex justify-end">
                <button 
                  onClick={() => setShowCertificate(true)}
-                 className="flex items-center gap-2 bg-[#1A2533] text-white px-6 py-2.5 rounded text-[10px] md:text-xs font-bold tracking-widest uppercase hover:bg-black transition-colors shadow-sm font-sans"
+                 className="flex items-center gap-2 bg-[#1A2533] dark:bg-zinc-800 text-white px-6 py-2.5 rounded text-[10px] md:text-xs font-bold tracking-widest uppercase hover:bg-black dark:hover:bg-zinc-700 transition-colors shadow-sm font-sans"
                >
                  <Award size={16} className="text-[#E0D7C6]" />
                  Ver Certificado Oficial
@@ -147,7 +147,7 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
           })()}
           
           <div className="grid gap-3">
-             {Array.from({ length: 90 }).map((_, index) => {
+             {Array.from({ length: total }).map((_, index) => {
                 const lesson = course.lessons[index];
                 const dayNumber = index + 1;
                 

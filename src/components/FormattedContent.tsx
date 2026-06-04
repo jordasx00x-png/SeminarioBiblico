@@ -49,7 +49,7 @@ export function TextWithGlossary({ text }: { text: string }) {
           if (s.startsWith('**') && s.endsWith('**')) {
             const innerText = s.slice(2, -2);
             // Recursively apply glossary to the inner text of bold
-            tempParts.push(<strong key={s} className="font-bold text-stone-900">{applyGlossary([innerText])}</strong>);
+            tempParts.push(<strong key={s} className="font-bold text-stone-900 dark:text-stone-100">{applyGlossary([innerText])}</strong>);
           } else if (s !== '') {
             tempParts.push(s);
           }

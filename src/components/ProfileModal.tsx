@@ -54,15 +54,15 @@ export function ProfileModal({ user, onClose, onSave }: ProfileModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col">
-        <div className="flex justify-between items-center p-5 border-b border-[#E0D7C6]">
-          <h2 className="text-xl font-bold text-[#1A2533] uppercase tracking-widest font-sans flex items-center gap-2">
-            <UserIcon size={20} className="text-[#7F1D1D]" /> 
+      <div className="bg-white dark:bg-zinc-900 border border-transparent dark:border-zinc-800 rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col">
+        <div className="flex justify-between items-center p-5 border-b border-[#E0D7C6] dark:border-zinc-800">
+          <h2 className="text-xl font-bold text-[#1A2533] dark:text-stone-100 uppercase tracking-widest font-sans flex items-center gap-2">
+            <UserIcon size={20} className="text-[#7F1D1D] dark:text-[#E0D7C6]" /> 
             Configurar Cuenta
           </h2>
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 transition-colors"
+            className="text-gray-400 hover:text-gray-700 dark:hover:text-stone-100 transition-colors"
           >
             <X size={20} />
           </button>
@@ -70,66 +70,66 @@ export function ProfileModal({ user, onClose, onSave }: ProfileModalProps) {
 
         <form onSubmit={handleSave} className="p-6 space-y-5">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans">
+            <label className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-sans">
               Nombre Completo
             </label>
             <div className="relative">
-              <UserIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <UserIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
               <input
                 type="text"
                 value={profile.fullName}
                 onChange={e => setProfile({...profile, fullName: e.target.value})}
                 placeholder="Nombre para tu certificado"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-[#E0D7C6] rounded outline-none focus:border-[#7F1D1D] focus:ring-1 focus:ring-[#7F1D1D] transition-all font-sans text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-zinc-800 border border-[#E0D7C6] dark:border-zinc-700 dark:text-stone-100 rounded outline-none focus:border-[#7F1D1D] dark:focus:border-zinc-500 focus:ring-1 focus:ring-[#7F1D1D] transition-all font-sans text-sm"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans">
+            <label className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-sans">
               Correo Electrónico
             </label>
             <div className="relative">
-              <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
               <input
                 type="email"
                 value={profile.email}
                 onChange={e => setProfile({...profile, email: e.target.value})}
                 placeholder="tu@correo.com"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-[#E0D7C6] rounded outline-none focus:border-[#7F1D1D] focus:ring-1 focus:ring-[#7F1D1D] transition-all font-sans text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-zinc-800 border border-[#E0D7C6] dark:border-zinc-700 dark:text-stone-100 rounded outline-none focus:border-[#7F1D1D] dark:focus:border-zinc-500 focus:ring-1 focus:ring-[#7F1D1D] transition-all font-sans text-sm"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans">
+            <label className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-sans">
               Número de Teléfono
             </label>
             <div className="relative">
-              <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
               <input
                 type="tel"
                 value={profile.phoneNumber}
                 onChange={e => setProfile({...profile, phoneNumber: e.target.value})}
                 placeholder="+1 234 567 890"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-[#E0D7C6] rounded outline-none focus:border-[#7F1D1D] focus:ring-1 focus:ring-[#7F1D1D] transition-all font-sans text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-zinc-800 border border-[#E0D7C6] dark:border-zinc-700 dark:text-stone-100 rounded outline-none focus:border-[#7F1D1D] dark:focus:border-zinc-500 focus:ring-1 focus:ring-[#7F1D1D] transition-all font-sans text-sm"
               />
             </div>
           </div>
 
-          <div className="pt-4 flex justify-end gap-3 border-t border-[#E0D7C6] mt-6">
+          <div className="pt-4 flex justify-end gap-3 border-t border-[#E0D7C6] dark:border-zinc-800 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-wider font-sans"
+              className="px-4 py-2 text-sm font-bold text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-stone-100 transition-colors uppercase tracking-wider font-sans"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-[#1A2533] text-white rounded text-sm font-bold hover:bg-black transition-colors uppercase tracking-wider font-sans shadow shadow-[#1A2533]/20 flex items-center gap-2"
+              className="px-6 py-2 bg-[#1A2533] dark:bg-[#7F1D1D] text-white rounded text-sm font-bold hover:bg-black dark:hover:bg-[#991B1B] transition-colors uppercase tracking-wider font-sans shadow shadow-[#1A2533]/20 flex items-center gap-2"
             >
               <Save size={16} /> Guardar
             </button>

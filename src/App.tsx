@@ -9,7 +9,9 @@ import { Dashboard } from './components/Dashboard';
 import { CourseOverview } from './components/CourseOverview';
 import { LandingPage } from './components/LandingPage';
 import { ProfileModal } from './components/ProfileModal';
-import { Menu, X, LayoutDashboard, BookOpen, Settings } from 'lucide-react';
+import { WelcomePage } from './components/WelcomePage';
+import { DailyVerseNotification } from './components/DailyVerseNotification';
+import { Menu, X, LayoutDashboard, BookOpen, Lightbulb } from 'lucide-react';
 
 export default function App() {
   const { user, isLoading, signInWithGoogle, signOut } = useAuth();
@@ -20,6 +22,26 @@ export default function App() {
   const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string}>({});
   const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('darkMode') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    console.log('darkMode changed:', darkMode);
+    try {
+      localStorage.setItem('darkMode', String(darkMode));
+    } catch (e) {}
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
 
   // Scroll to top when course or lesson changes
   useEffect(() => {
@@ -40,11 +62,7 @@ export default function App() {
   }, [user]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#FDFCFB] flex items-center justify-center font-serif">
-        <div className="animate-pulse text-[#1A2533]">Verificando credenciales...</div>
-      </div>
-    );
+    return <WelcomePage />;
   }
 
   if (!user) {
@@ -66,37 +84,36 @@ export default function App() {
   ) || mockDatabase.courses[0];
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] text-[#2C2C2C] font-serif flex flex-col md:flex-row relative">
+    <div className={`min-h-screen bg-[#FDFCFB] text-[#2C2C2C] dark:bg-[#121212] dark:text-stone-100 font-serif flex flex-col md:flex-row relative transition-colors duration-300`}>
+      <DailyVerseNotification />
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        className="fixed top-4 right-4 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur shadow-lg border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all active:scale-95"
+        aria-label="Alternar tema"
+      >
+        {darkMode ? (
+          <Lightbulb size={20} className="text-amber-500 fill-amber-400" />
+        ) : (
+          <Lightbulb size={20} className="text-gray-500" />
+        )}
+      </button>
       
       {/* Mobile top bar */}
       <div className="md:hidden bg-[#1A2533] text-white px-5 py-4 flex justify-between items-center shadow-lg border-b border-[#2C3E50] sticky top-0 z-50">
-         <button 
-            onClick={() => setShowProfile(true)}
-            className="flex items-center gap-3 hover:opacity-85 transition-opacity text-left cursor-pointer"
-            title="Configurar Cuenta"
-         >
-            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs font-bold text-white ring-1 ring-white/20">
-               {(customProfile?.fullName || user?.displayName || 'U').charAt(0).toUpperCase()}
+         <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white ring-1 ring-white/20">
+               {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
             </div>
             <h1 className="text-lg font-bold tracking-tight text-[#E0D7C6]">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-xs font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
-         </button>
-         <div className="flex items-center gap-1.5">
-           <button 
-             onClick={() => setShowProfile(true)}
-             className="p-1.5 text-gray-300 hover:text-white hover:bg-white/10 rounded transition-colors flex items-center gap-1"
-             title="Configurar cuenta"
-           >
-             <Settings size={20} />
-             <span className="text-xs font-sans">Cuenta</span>
-           </button>
-           <button 
-             onClick={() => setSidebarOpen(prev => !prev)} 
-             className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
-           >
-             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-           </button>
          </div>
+         <button 
+           onClick={() => setSidebarOpen(prev => !prev)} 
+           className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+         >
+           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+         </button>
       </div>
+
 
       <Sidebar 
          courses={mockDatabase.courses}
@@ -129,6 +146,8 @@ export default function App() {
           user={user} 
           onClose={() => setShowProfile(false)} 
           onSave={(profileData) => setCustomProfile(profileData)}
+
+
         />
       )}
 
@@ -161,8 +180,7 @@ export default function App() {
              <Dashboard 
                user={user} 
                courses={mockDatabase.courses} 
-                customProfile={customProfile}
-                progress={progress} 
+               progress={progress} 
                onSelectCourse={(courseId) => {
                  setActiveCourseId(courseId);
                  setActiveLessonId(null);
@@ -190,7 +208,7 @@ export default function App() {
         />
       )}
 
-      <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E0D7C6] h-16 flex items-center justify-around z-40 px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-[#E0D7C6] dark:border-zinc-800 h-16 flex items-center justify-around z-40 px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] transition-colors duration-300">
         <button 
           onClick={() => {
             setActiveCourseId(null);
