@@ -56,7 +56,7 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
       </div>
       
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
-        <div className="mb-4">
+        <div className="mb-4 space-y-1.5">
           <button 
              onClick={() => onSelectLesson(null, null)}
              className={`w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center gap-3 ${
@@ -65,6 +65,17 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
            >
              <LayoutDashboard className={`w-4 h-4 ${isDashboardActive ? 'text-white' : 'text-[#E0D7C6]'}`} />
              <span className="font-medium">Inicio (Panel Académico)</span>
+           </button>
+
+           <button 
+              onClick={() => {
+                if (onOpenProfile) onOpenProfile();
+                if (onClose) onClose();
+              }}
+              className="w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center gap-3 text-gray-300 hover:bg-[#2C3E50] hover:text-white"
+            >
+              <Settings className="w-4 h-4 text-[#E0D7C6]" />
+              <span className="font-medium">Configurar Cuenta / Perfil</span>
            </button>
         </div>
         
@@ -114,7 +125,7 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
                  <img src={user.photoURL} alt="Avatar" className="w-8 h-8 rounded" referrerPolicy="no-referrer" />
               ) : (
                  <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white">
-                   {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
+                   {(customProfile?.fullName || user?.displayName || 'U').charAt(0).toUpperCase()}
                  </div>
               )}
               <div className="flex flex-col">

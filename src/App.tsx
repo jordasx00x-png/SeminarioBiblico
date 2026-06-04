@@ -9,7 +9,7 @@ import { Dashboard } from './components/Dashboard';
 import { CourseOverview } from './components/CourseOverview';
 import { LandingPage } from './components/LandingPage';
 import { ProfileModal } from './components/ProfileModal';
-import { Menu, X, LayoutDashboard, BookOpen } from 'lucide-react';
+import { Menu, X, LayoutDashboard, BookOpen, Settings } from 'lucide-react';
 
 export default function App() {
   const { user, isLoading, signInWithGoogle, signOut } = useAuth();
@@ -70,18 +70,32 @@ export default function App() {
       
       {/* Mobile top bar */}
       <div className="md:hidden bg-[#1A2533] text-white px-5 py-4 flex justify-between items-center shadow-lg border-b border-[#2C3E50] sticky top-0 z-50">
-         <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white ring-1 ring-white/20">
-               {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
+         <button 
+            onClick={() => setShowProfile(true)}
+            className="flex items-center gap-3 hover:opacity-85 transition-opacity text-left cursor-pointer"
+            title="Configurar Cuenta"
+         >
+            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs font-bold text-white ring-1 ring-white/20">
+               {(customProfile?.fullName || user?.displayName || 'U').charAt(0).toUpperCase()}
             </div>
             <h1 className="text-lg font-bold tracking-tight text-[#E0D7C6]">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-xs font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
-         </div>
-         <button 
-           onClick={() => setSidebarOpen(prev => !prev)} 
-           className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
-         >
-           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
          </button>
+         <div className="flex items-center gap-1.5">
+           <button 
+             onClick={() => setShowProfile(true)}
+             className="p-1.5 text-gray-300 hover:text-white hover:bg-white/10 rounded transition-colors flex items-center gap-1"
+             title="Configurar cuenta"
+           >
+             <Settings size={20} />
+             <span className="text-xs font-sans">Cuenta</span>
+           </button>
+           <button 
+             onClick={() => setSidebarOpen(prev => !prev)} 
+             className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+           >
+             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+           </button>
+         </div>
       </div>
 
       <Sidebar 
@@ -147,7 +161,8 @@ export default function App() {
              <Dashboard 
                user={user} 
                courses={mockDatabase.courses} 
-               progress={progress} 
+                customProfile={customProfile}
+                progress={progress} 
                onSelectCourse={(courseId) => {
                  setActiveCourseId(courseId);
                  setActiveLessonId(null);
