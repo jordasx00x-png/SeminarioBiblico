@@ -23,16 +23,23 @@ export function useAuth() {
     } catch (error: any) {
       console.error('Error signing in with Google', error);
       
+      // If unauthorized domain, alert the user (common issue with custom deployments like Netlify)
+      if (error.code === 'auth/unauthorized-domain') {
+        alert('Este dominio (' + window.location.hostname + ') no ha sido autorizado en la consola de Firebase. Por favor, añádalo a la lista de dominios permitidos.');
+        return;
+      }
+
       // If popup is blocked or fails, try redirect as fallback (common on mobile)
-      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
-        // We can't easily auto-redirect from inside a click handler without user knowing,
-        // but we can try it.
+      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || /Mobi|Android/i.test(navigator.userAgent)) {
         try {
           const { signInWithRedirect } = await import('firebase/auth');
           await signInWithRedirect(auth, provider);
         } catch (e) {
           console.error('Redirect failed too', e);
+          alert('Error al iniciar sesión. Por favor, intente nuevamente o use otro navegador.');
         }
+      } else {
+        alert('Error al iniciar sesión: ' + error.message);
       }
     }
   };

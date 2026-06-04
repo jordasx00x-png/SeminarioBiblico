@@ -105,10 +105,10 @@ export default function App() {
         />
       )}
 
-      <main className="flex-1 flex flex-col overflow-hidden w-full h-[calc(100vh-68px)] md:h-screen relative">
+      <main className="flex-1 flex flex-col min-h-0 w-full relative">
          <div 
            ref={scrollContainerRef}
-           className="relative z-10 w-full h-full overflow-y-auto custom-scrollbar pb-20 md:pb-0"
+           className="absolute inset-0 overflow-y-auto custom-scrollbar pb-24 md:pb-0"
          >
            {activeLesson && activeCourse ? (
              <LessonViewer 
