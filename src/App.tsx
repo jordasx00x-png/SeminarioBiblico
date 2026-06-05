@@ -101,7 +101,7 @@ export default function App() {
       <DailyVerseNotification />
       <button
         onClick={() => setDarkMode(!darkMode)}
-        className="fixed top-4 right-4 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur shadow-lg border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all active:scale-95"
+        className="hidden md:flex fixed top-4 right-4 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur shadow-lg border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all active:scale-95"
         aria-label="Alternar tema"
       >
         {darkMode ? (
@@ -112,19 +112,32 @@ export default function App() {
       </button>
       
       {/* Mobile top bar */}
-      <div className="md:hidden bg-[#1A2533] text-white px-5 py-4 flex justify-between items-center shadow-lg border-b border-[#2C3E50] sticky top-0 z-50">
-         <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white ring-1 ring-white/20">
+      <div className="md:hidden bg-[#1A2533] text-white px-4 md:px-5 py-3 md:py-4 flex justify-between items-center shadow-lg border-b border-[#2C3E50] sticky top-0 z-50">
+         <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white ring-1 ring-white/20 shrink-0">
                {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
             </div>
-            <h1 className="text-lg font-bold tracking-tight text-[#E0D7C6]">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-xs font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
+            <h1 className="text-base font-bold tracking-tight text-[#E0D7C6] truncate">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-[10px] font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
          </div>
-         <button 
-           onClick={() => setSidebarOpen(prev => !prev)} 
-           className="p-1.5 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
-         >
-           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-         </button>
+         <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2 text-gray-300 hover:text-white transition-colors rounded-lg bg-white/5 active:bg-white/10"
+              aria-label="Alternar tema"
+            >
+               {darkMode ? (
+                 <Lightbulb size={18} className="text-amber-400 fill-amber-400" />
+               ) : (
+                 <Lightbulb size={18} />
+               )}
+            </button>
+            <button 
+              onClick={() => setSidebarOpen(prev => !prev)} 
+              className="p-2 text-gray-300 hover:text-white transition-colors rounded-lg bg-white/5 active:bg-white/10"
+            >
+              {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+         </div>
       </div>
 
 

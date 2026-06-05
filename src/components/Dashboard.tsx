@@ -169,10 +169,10 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
          </div>
       </div>
 
-      <div className="flex items-center gap-4 mb-8 border-b border-[#E0D7C6] flex-wrap md:flex-nowrap">
+      <div className="flex items-center gap-4 md:gap-6 mb-8 border-b border-[#E0D7C6] overflow-x-auto hide-scrollbar whitespace-nowrap">
         <button
           onClick={() => setActiveTab('courses')}
-          className={`pb-4 px-2 text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative ${
+          className={`pb-4 px-2 text-[11px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative whitespace-nowrap shrink-0 ${
             activeTab === 'courses' ? 'text-[#1A2533]' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
@@ -182,7 +182,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
         </button>
         <button
           onClick={() => setActiveTab('calendar')}
-          className={`pb-4 px-2 text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative ${
+          className={`pb-4 px-2 text-[11px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative whitespace-nowrap shrink-0 ${
             activeTab === 'calendar' ? 'text-[#1A2533]' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
@@ -192,7 +192,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
         </button>
         <button
           onClick={() => setActiveTab('grades')}
-          className={`pb-4 px-2 text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative ${
+          className={`pb-4 px-2 text-[11px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative whitespace-nowrap shrink-0 ${
             activeTab === 'grades' ? 'text-[#1A2533]' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
@@ -204,19 +204,6 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
 
       {activeTab === 'courses' ? (
         <div className="space-y-12">
-          {/* GitHub Export Message */}
-          <div className="bg-[#1A2533] border border-[#2C3E50] shadow-sm rounded-xl p-5 flex items-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-[#E0D7C6]">
-              <Info size={20} />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-bold text-white text-sm font-sans tracking-wide">Exportar a GitHub</h3>
-              <p className="text-xs text-gray-300 font-sans leading-relaxed max-w-3xl">
-                Para exportar este proyecto a su cuenta de GitHub o descargarlo localmente como archivo ZIP, haga clic en el <strong>menú de configuración (icono de tres puntos, esquina superior derecha)</strong> en la interfaz de AI Studio y seleccione <strong>"Export to GitHub"</strong> o <strong>"Download ZIP"</strong>.
-              </p>
-            </div>
-          </div>
-
           <section className="animate-in fade-in slide-in-from-bottom-8 duration-500">
             <div className="flex items-center gap-3 mb-6">
               <Award className="text-[#7F1D1D]" size={24} />
