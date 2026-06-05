@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { mockDatabase } from './data';
 import { useProgress } from './hooks/useProgress';
 import { useAuth } from './hooks/useAuth';
+import { useStudyReminder } from './hooks/useStudyReminder';
 import { Sidebar } from './components/Sidebar';
 import { LessonViewer } from './components/LessonViewer';
 import { BlockExamModal } from './components/BlockExamModal';
@@ -26,7 +27,7 @@ export default function App() {
     }
   });
   const [showProfile, setShowProfile] = useState(false);
-  const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string}>({});
+  const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string; studyReminderEnabled?: boolean; studyReminderTime?: string}>({});
   const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +42,8 @@ export default function App() {
       } catch(e) {}
     }
   }, [user]);
+
+  useStudyReminder(customProfile);
 
   // Dark mode has been removed, forcing light mode
   useEffect(() => {
