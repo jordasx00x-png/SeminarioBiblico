@@ -1,13 +1,13 @@
 const CACHE_NAME = 'seminario-teologico-cache-v1';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon.svg',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/icon-192-maskable.png',
-  '/icon-512-maskable.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon.svg',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-192-maskable.png',
+  './icon-512-maskable.png'
 ];
 
 // Instalar Service Worker y pre-cachear recursos básicos
@@ -68,7 +68,7 @@ self.addEventListener('fetch', (event) => {
       }).catch(() => {
         // Fallback básico si está completamente offline y no hay recurso en caché
         if (event.request.mode === 'navigate') {
-          return caches.match('/');
+          return caches.match('./');
         }
       });
     })
