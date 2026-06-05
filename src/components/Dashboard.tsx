@@ -8,10 +8,11 @@ interface DashboardProps {
   user: User | null;
   courses: Course[];
   progress: UserProgress;
+  customProfile?: {fullName?: string; email?: string; phoneNumber?: string};
   onSelectCourse: (courseId: string) => void;
 }
 
-export function Dashboard({ user, courses, progress, onSelectCourse }: DashboardProps) {
+export function Dashboard({ user, courses, progress, customProfile, onSelectCourse }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'courses' | 'calendar' | 'grades'>('courses');
   const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({});
   
@@ -144,7 +145,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
           Panel Académico
         </h1>
         <p className="text-gray-600 font-sans mt-4 text-sm md:text-base">
-          Bienvenido nuevamente, <span className="font-bold text-[#1A2533]">{user?.displayName || 'Estudioso'}</span>. Consulta tu progreso y selecciona el módulo a cursar el día de hoy.
+          Bienvenido nuevamente, <span className="font-bold text-[#1A2533]">{customProfile?.fullName || user?.displayName || 'Estudioso'}</span>. Consulta tu progreso y selecciona el módulo a cursar el día de hoy.
         </p>
       </div>
 
@@ -454,7 +455,7 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
                       Boleta Oficial - {levelData.key === 'BACHILLERATO' ? 'Bachillerato' : levelData.key === 'LICENCIATURA' ? 'Licenciatura' : 'Maestría'}
                     </h2>
                     <p className="text-xs text-opacity-80 text-white font-sans max-w-xl">
-                      Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño y convalidaciones del tribunal docente.
+                      Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{customProfile?.fullName || user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño y convalidaciones del tribunal docente.
                     </p>
                   </div>
                   
