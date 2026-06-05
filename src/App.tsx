@@ -11,7 +11,7 @@ import { LandingPage } from './components/LandingPage';
 import { ProfileModal } from './components/ProfileModal';
 import { WelcomePage } from './components/WelcomePage';
 import { DailyVerseNotification } from './components/DailyVerseNotification';
-import { Menu, X, LayoutDashboard, BookOpen, Lightbulb } from 'lucide-react';
+import { Menu, X, LayoutDashboard, BookOpen } from 'lucide-react';
 
 export default function App() {
   const { user, isLoading, signInWithGoogle, signOut } = useAuth();
