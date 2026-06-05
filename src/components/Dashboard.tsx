@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Course, UserProgress } from '../types';
-import { BookOpen, Award, CheckCircle, PlayCircle, BarChart3, Calendar as CalendarIcon, LayoutDashboard, ChevronDown, ChevronUp, GraduationCap, TrendingUp, FileText, Lock, Unlock, ShieldCheck, Info } from 'lucide-react';
+import { BookOpen, Award, CheckCircle, PlayCircle, BarChart3, Calendar as CalendarIcon, LayoutDashboard, ChevronDown, ChevronUp, GraduationCap, TrendingUp, FileText, Lock, Unlock, ShieldCheck, Info, Search, Edit3 } from 'lucide-react';
 import { User } from 'firebase/auth';
 import { StudyCalendar } from './StudyCalendar';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface DashboardProps {
   user: User | null;
@@ -15,6 +16,7 @@ interface DashboardProps {
 export function Dashboard({ user, courses, progress, customProfile, onSelectCourse }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'courses' | 'calendar' | 'grades'>('courses');
   const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [bypassUnlocked, setBypassUnlocked] = useState<boolean>(() => {
     return localStorage.getItem('bypass_licenciatura_unlock') === 'true';
@@ -33,6 +35,15 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
 
   const basicCourses = courses.filter(c => c.type === 'BIBLE_STUDY' || c.type === 'SPECIALIZED');
   const totalBasicLessons = basicCourses.reduce((sum, c) => sum + c.lessons.length, 0);
+
+  const query = searchQuery.toLowerCase().trim();
+  const searchFilter = (c: Course) => c.title.toLowerCase().includes(query) || c.description.toLowerCase().includes(query);
+
+  const filteredSpecialized = specialized.filter(searchFilter);
+  const filteredBibleStudies = bibleStudies.filter(searchFilter);
+  const filteredLicenciatura = licenciaturaCourses.filter(searchFilter);
+  const filteredMaestria = maestriaCourses.filter(searchFilter);
+
   const completedBasicLessons = basicCourses.reduce((sum, c) => {
     return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
   }, 0);
@@ -55,15 +66,9 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const allLicenciaturaCompleted = completedLicenciaturaLessons >= totalLicenciaturaLessons && totalLicenciaturaLessons > 0;
   const isMaestriaUnlocked = allLicenciaturaCompleted || bypassUnlocked;
 
-  const calculateGlobalProgress = () => {
-    let activeCourses = basicCourses;
-    if (isMaestriaUnlocked) {
-      activeCourses = courses;
-    } else if (isLicenciaturaUnlocked) {
-      activeCourses = [...basicCourses, ...licenciaturaCourses];
-    }
-    const total = activeCourses.length * 90;
-    const completed = activeCourses.reduce((sum, c) => {
+  const calculateProgressForCourses = (courseList: Course[]) => {
+    const total = courseList.length * 90;
+    const completed = courseList.reduce((sum, c) => {
       const completedReal = c.lessons.filter(l => progress.completedLessons[l.id]).length;
       const pct = c.lessons.length > 0 ? (completedReal / c.lessons.length) : 0;
       return sum + Math.round(pct * 90);
@@ -71,7 +76,9 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
     return { total, completed, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
   };
 
-  const globalProg = calculateGlobalProgress();
+  const bachilleratoProg = calculateProgressForCourses(basicCourses);
+  const licenciaturaProg = calculateProgressForCourses(licenciaturaCourses);
+  const maestriaProg = calculateProgressForCourses(maestriaCourses);
 
   // Grades calculations
   const courseGradesList = courses.map(course => {
@@ -149,28 +156,90 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-500">
-         <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
-            <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
-               <BarChart3 size={24} />
-            </div>
-            <div>
-               <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Avance Global</div>
-               <div className="text-2xl font-black text-[#1A2533]">{globalProg.percentage}%</div>
+      <div className="space-y-6 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-500">
+         {/* Bachillerato */}
+         <div>
+            <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
+               <BookOpen size={14}/> Bachillerato
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
+                     <BarChart3 size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Avance Global</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{bachilleratoProg.percentage}%</div>
+                  </div>
+               </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                     <CheckCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{bachilleratoProg.completed} <span className="text-sm text-gray-400 font-normal">/ {bachilleratoProg.total}</span></div>
+                  </div>
+               </div>
             </div>
          </div>
-         <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
-            <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
-               <CheckCircle size={24} />
+
+         {/* Licenciatura */}
+         <div className={!isLicenciaturaUnlocked ? "opacity-60 grayscale" : ""}>
+            <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
+               <GraduationCap size={14}/> Licenciatura {!isLicenciaturaUnlocked && <Lock size={12} className="ml-1"/>}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
+                     <BarChart3 size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Avance Global</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{licenciaturaProg.percentage}%</div>
+                  </div>
+               </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                     <CheckCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{licenciaturaProg.completed} <span className="text-sm text-gray-400 font-normal">/ {licenciaturaProg.total}</span></div>
+                  </div>
+               </div>
             </div>
-            <div>
-               <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
-               <div className="text-2xl font-black text-[#1A2533]">{globalProg.completed} <span className="text-sm text-gray-400 font-normal">/ {globalProg.total}</span></div>
+         </div>
+
+         {/* Maestría */}
+         <div className={!isMaestriaUnlocked ? "opacity-60 grayscale" : ""}>
+            <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
+               <Award size={14}/> Maestría {!isMaestriaUnlocked && <Lock size={12} className="ml-1"/>}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
+                     <BarChart3 size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Avance Global</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{maestriaProg.percentage}%</div>
+                  </div>
+               </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                     <CheckCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{maestriaProg.completed} <span className="text-sm text-gray-400 font-normal">/ {maestriaProg.total}</span></div>
+                  </div>
+               </div>
             </div>
          </div>
       </div>
 
-      <div className="flex items-center gap-4 md:gap-6 mb-8 border-b border-[#E0D7C6] overflow-x-auto hide-scrollbar whitespace-nowrap">
+      <div className="flex items-center gap-4 md:gap-6 mb-8 border-b border-[#E0D7C6] overflow-x-auto hide-scrollbar whitespace-nowrap relative">
         <button
           onClick={() => setActiveTab('courses')}
           className={`pb-4 px-2 text-[11px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all relative whitespace-nowrap shrink-0 ${
@@ -179,7 +248,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
         >
           <LayoutDashboard size={16} />
           Catálogo Académico
-          {activeTab === 'courses' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#1A2533] animate-in fade-in duration-300" />}
+          {activeTab === 'courses' && <motion.div layoutId="activeTabIndicator" className="absolute bottom-0 left-0 w-full h-0.5 bg-[#1A2533]" />}
         </button>
         <button
           onClick={() => setActiveTab('calendar')}
@@ -189,7 +258,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
         >
           <CalendarIcon size={16} />
           Plan de Estudio (3 Meses)
-          {activeTab === 'calendar' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#1A2533] animate-in fade-in duration-300" />}
+          {activeTab === 'calendar' && <motion.div layoutId="activeTabIndicator" className="absolute bottom-0 left-0 w-full h-0.5 bg-[#1A2533]" />}
         </button>
         <button
           onClick={() => setActiveTab('grades')}
@@ -199,33 +268,64 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
         >
           <Award size={16} />
           Boleta de Calificaciones
-          {activeTab === 'grades' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#1A2533] animate-in fade-in duration-300" />}
+          {activeTab === 'grades' && <motion.div layoutId="activeTabIndicator" className="absolute bottom-0 left-0 w-full h-0.5 bg-[#1A2533]" />}
         </button>
       </div>
 
-      {activeTab === 'courses' ? (
-        <div className="space-y-12">
-          <section className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-            <div className="flex items-center gap-3 mb-6">
-              <Award className="text-[#7F1D1D]" size={24} />
-              <h2 className="text-2xl font-bold text-[#1A2533]">Cursos Especializados</h2>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-6">
-              {specialized.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
-            </div>
-          </section>
+      <AnimatePresence mode="wait">
+        {activeTab === 'courses' ? (
+          <motion.div 
+            key="courses"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-12"
+          >
+            {/* Search Bar */}
+          <div className="relative animate-in fade-in slide-in-from-bottom-6 duration-500">
+            <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar cursos por título o palabra clave..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 bg-white border border-[#E0D7C6] rounded-xl outline-none focus:border-[#1A2533] focus:ring-1 focus:ring-[#1A2533] transition-all font-sans text-sm shadow-sm"
+            />
+          </div>
 
-          <section className="animate-in fade-in slide-in-from-bottom-10 duration-500">
-            <div className="flex items-center gap-3 mb-6">
-              <BookOpen className="text-[#7F1D1D]" size={24} />
-              <h2 className="text-2xl font-bold text-[#1A2533]">Estudio Bíblico</h2>
+          {filteredSpecialized.length === 0 && filteredBibleStudies.length === 0 && filteredLicenciatura.length === 0 && filteredMaestria.length === 0 && query !== '' && (
+            <div className="text-center py-12 bg-white rounded-xl border border-[#E0D7C6]">
+              <p className="text-gray-500 font-sans">No se encontraron cursos que coincidan con la búsqueda.</p>
             </div>
-            <div className="grid lg:grid-cols-2 gap-6">
-              {bibleStudies.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
-            </div>
-          </section>
+          )}
+
+          {filteredSpecialized.length > 0 && (
+            <section className="animate-in fade-in slide-in-from-bottom-8 duration-500">
+              <div className="flex items-center gap-3 mb-6">
+                <Award className="text-[#7F1D1D]" size={24} />
+                <h2 className="text-2xl font-bold text-[#1A2533]">Cursos Especializados</h2>
+              </div>
+              <div className="grid lg:grid-cols-2 gap-6">
+                {filteredSpecialized.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
+              </div>
+            </section>
+          )}
+
+          {filteredBibleStudies.length > 0 && (
+            <section className="animate-in fade-in slide-in-from-bottom-10 duration-500">
+              <div className="flex items-center gap-3 mb-6">
+                <BookOpen className="text-[#7F1D1D]" size={24} />
+                <h2 className="text-2xl font-bold text-[#1A2533]">Estudio Bíblico</h2>
+              </div>
+              <div className="grid lg:grid-cols-2 gap-6">
+                {filteredBibleStudies.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
+              </div>
+            </section>
+          )}
 
           {/* LICENCIATURA EN TEOLOGÍA SUPERIOR */}
+          {(query === '' || filteredLicenciatura.length > 0) && (
           <section className="border-t border-[#E0D7C6]/60 pt-10 animate-in fade-in slide-in-from-bottom-12 duration-500 space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -306,7 +406,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             )}
 
             <div className="grid lg:grid-cols-2 gap-6">
-              {licenciaturaCourses.map(course => (
+              {filteredLicenciatura.map(course => (
                 <CourseCard 
                   key={course.id} 
                   course={course} 
@@ -317,8 +417,10 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
               ))}
             </div>
           </section>
+          )}
 
           {/* MAESTRÍA */}
+          {(query === '' || filteredMaestria.length > 0) && (
           <section className="border-t border-[#E0D7C6]/60 pt-10 animate-in fade-in slide-in-from-bottom-12 duration-500 space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -389,7 +491,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             )}
 
             <div className="grid lg:grid-cols-2 gap-6">
-              {maestriaCourses.map(course => (
+              {filteredMaestria.map(course => (
                 <CourseCard 
                   key={course.id} 
                   course={course} 
@@ -400,9 +502,16 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
               ))}
             </div>
           </section>
-        </div>
+          )}
+        </motion.div>
       ) : activeTab === 'calendar' ? (
-        <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
+        <motion.div 
+          key="calendar"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+        >
           {(() => {
             const activeCourseFromProgress = courses.find(c => c.lessons.some(l => progress.completedLessons[l.id]));
             const calendarTotalLessons = activeCourseFromProgress?.durationMonths 
@@ -410,9 +519,16 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
               : 90;
             return <StudyCalendar progress={progress} totalLessons={calendarTotalLessons} />;
           })()}
-        </div>
+        </motion.div>
       ) : (
-        <div className="space-y-16 animate-in fade-in duration-500">
+        <motion.div 
+          key="grades"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-16"
+        >
           {/* List Controls */}
           <div className="flex justify-between items-center border-b border-[#E0D7C6] pb-4">
             <h3 className="text-xl font-bold text-[#1A2533] font-serif">Boleta Detallada por Asignaturas</h3>
@@ -683,8 +799,9 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
               Registrado de Forma Electrónica e Inmutable • Seminario Teológico Digital Sola Fide
             </p>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -696,7 +813,9 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
   const completedScaled = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * total) : 0;
   
   return (
-    <button 
+    <motion.button 
+      whileHover={isLocked ? {} : { scale: 1.02 }}
+      whileTap={isLocked ? {} : { scale: 0.98 }}
       onClick={() => !isLocked && onSelectCourse(course.id)}
       disabled={isLocked}
       className={`bg-white border rounded-xl overflow-hidden shadow-sm transition-all flex flex-col h-full group text-left w-full ${
@@ -758,6 +877,6 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
            </div>
          )}
       </div>
-    </button>
+    </motion.button>
   );
 }

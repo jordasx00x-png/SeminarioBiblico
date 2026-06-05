@@ -12,7 +12,9 @@ import { LandingPage } from './components/LandingPage';
 import { ProfileModal } from './components/ProfileModal';
 import { WelcomePage } from './components/WelcomePage';
 import { DailyVerseNotification } from './components/DailyVerseNotification';
-import { Menu, X, LayoutDashboard, BookOpen, Settings } from 'lucide-react';
+import { NotebookModal } from './components/NotebookModal';
+import { Menu, X, LayoutDashboard, BookOpen, Settings, Edit3 } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 
 export default function App() {
   const { user, isLoading, signInWithGoogle, signOut } = useAuth();
@@ -27,6 +29,7 @@ export default function App() {
     }
   });
   const [showProfile, setShowProfile] = useState(false);
+  const [showNotebook, setShowNotebook] = useState(false);
   const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string; studyReminderEnabled?: boolean; studyReminderTime?: string}>({});
   const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -172,53 +175,94 @@ export default function App() {
          />
       )}
 
+      {/* Floating Notebook Button */}
+      <button
+        onClick={() => setShowNotebook(true)}
+        className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-40 p-4 rounded-full bg-[#1A2533] text-[#E0D7C6] shadow-lg hover:bg-[#2C3E50] hover:scale-105 transition-all duration-300"
+        aria-label="Abrir Cuaderno Digital"
+      >
+        <Edit3 size={24} />
+      </button>
+
+      <AnimatePresence>
+      {showNotebook && (
+        <NotebookModal onClose={() => setShowNotebook(false)} />
+      )}
+      </AnimatePresence>
+
+      <AnimatePresence>
       {showProfile && (
         <ProfileModal 
           user={user} 
           onClose={() => setShowProfile(false)} 
           onSave={(profileData) => setCustomProfile(profileData)}
-
-
         />
       )}
+      </AnimatePresence>
 
       <main className="flex-1 flex flex-col min-h-0 w-full relative">
          <div 
            ref={scrollContainerRef}
            className="absolute inset-0 overflow-y-auto custom-scrollbar pb-24 md:pb-0"
          >
-           {activeLesson && activeCourse ? (
-             <LessonViewer 
-               key={activeLesson.id}
-               lesson={activeLesson} 
-               course={activeCourse}
-               progress={progress}
-               onComplete={(score) => markCompleted(activeLesson.id, score)} 
-               onBack={() => {
-                 setActiveLessonId(null);
-               }}
-             />
-           ) : activeCourse ? (
-             <CourseOverview
-               course={activeCourse}
-               progress={progress}
-               user={user!}
-               customProfile={customProfile}
-               onSelectLesson={(lessonId) => setActiveLessonId(lessonId)}
-               onBack={() => setActiveCourseId(null)}
-             />
-           ) : (
-             <Dashboard 
-               user={user} 
-               courses={mockDatabase.courses} 
-               progress={progress} 
-               customProfile={customProfile}
-               onSelectCourse={(courseId) => {
-                 setActiveCourseId(courseId);
-                 setActiveLessonId(null);
-               }} 
-             />
-           )}
+           <AnimatePresence mode="wait">
+             {activeLesson && activeCourse ? (
+               <motion.div 
+                 key="lesson"
+                 initial={{ opacity: 0, x: 20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 exit={{ opacity: 0, x: -20 }}
+                 transition={{ duration: 0.3 }}
+               >
+                 <LessonViewer 
+                   key={activeLesson.id}
+                   lesson={activeLesson} 
+                   course={activeCourse}
+                   progress={progress}
+                   onComplete={(score) => markCompleted(activeLesson.id, score)} 
+                   onBack={() => {
+                     setActiveLessonId(null);
+                   }}
+                 />
+               </motion.div>
+             ) : activeCourse ? (
+               <motion.div 
+                 key="course-overview"
+                 initial={{ opacity: 0, x: 20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 exit={{ opacity: 0, x: -20 }}
+                 transition={{ duration: 0.3 }}
+               >
+                 <CourseOverview
+                   course={activeCourse}
+                   progress={progress}
+                   user={user!}
+                   customProfile={customProfile}
+                   onSelectLesson={(lessonId) => setActiveLessonId(lessonId)}
+                   onBack={() => setActiveCourseId(null)}
+                 />
+               </motion.div>
+             ) : (
+               <motion.div 
+                 key="dashboard"
+                 initial={{ opacity: 0, scale: 0.98 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 exit={{ opacity: 0, scale: 0.98 }}
+                 transition={{ duration: 0.3 }}
+               >
+                 <Dashboard 
+                   user={user} 
+                   courses={mockDatabase.courses} 
+                   progress={progress} 
+                   customProfile={customProfile}
+                   onSelectCourse={(courseId) => {
+                     setActiveCourseId(courseId);
+                     setActiveLessonId(null);
+                   }} 
+                 />
+               </motion.div>
+             )}
+           </AnimatePresence>
          </div>
       </main>
 
