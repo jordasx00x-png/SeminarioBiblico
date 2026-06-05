@@ -53,7 +53,7 @@ export function ProfileModal({ user, onClose, onSave }: ProfileModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white dark:bg-zinc-900 border border-transparent dark:border-zinc-800 rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col">
         <div className="flex justify-between items-center p-5 border-b border-[#E0D7C6] dark:border-zinc-800">
           <h2 className="text-xl font-bold text-[#1A2533] dark:text-stone-100 uppercase tracking-widest font-sans flex items-center gap-2">

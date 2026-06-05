@@ -81,6 +81,16 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
              <LayoutDashboard className={`w-4 h-4 ${isDashboardActive ? 'text-white' : 'text-[#E0D7C6]'}`} />
              <span className="font-medium">Inicio (Panel Académico)</span>
            </button>
+           
+           {onOpenProfile && (
+             <button 
+               onClick={onOpenProfile}
+               className="mt-2 w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center gap-3 text-gray-300 hover:bg-[#2C3E50] dark:hover:bg-zinc-800 hover:text-white"
+             >
+               <Settings className="w-4 h-4 text-[#E0D7C6]" />
+               <span className="font-medium">Ajustes del Perfil</span>
+             </button>
+           )}
         </div>
         
         {activeCourseId !== null && (() => {
