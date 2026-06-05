@@ -11,6 +11,7 @@ import { licenciaturaCourses } from './data/courses/licenciatura';
 import { licenciaturasExtra } from './data/courses/licenciaturas_extra';
 
 import { maestriaCourses } from './data/courses/maestria';
+import { doctoradoCourses } from './data/courses/doctorado';
 
 export const mockDatabase: Database = {
   courses: [
@@ -29,6 +30,7 @@ export const mockDatabase: Database = {
     },
     ...licenciaturaCourses,
     ...licenciaturasExtra,
-    ...maestriaCourses
+    ...maestriaCourses,
+    ...doctoradoCourses
   ]
 };

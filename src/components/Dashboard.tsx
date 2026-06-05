@@ -32,6 +32,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const specialized = courses.filter(c => c.type === 'SPECIALIZED');
   const licenciaturaCourses = courses.filter(c => c.type === 'LICENCIATURA');
   const maestriaCourses = courses.filter(c => c.type === 'MAESTRIA');
+  const doctoradoCourses = courses.filter(c => c.type === 'DOCTORADO');
 
   const basicCourses = courses.filter(c => c.type === 'BIBLE_STUDY' || c.type === 'SPECIALIZED');
   const totalBasicLessons = basicCourses.reduce((sum, c) => sum + c.lessons.length, 0);
@@ -43,6 +44,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const filteredBibleStudies = bibleStudies.filter(searchFilter);
   const filteredLicenciatura = licenciaturaCourses.filter(searchFilter);
   const filteredMaestria = maestriaCourses.filter(searchFilter);
+  const filteredDoctorado = doctoradoCourses.filter(searchFilter);
 
   const completedBasicLessons = basicCourses.reduce((sum, c) => {
     return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
@@ -66,6 +68,13 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const allLicenciaturaCompleted = completedLicenciaturaLessons >= totalLicenciaturaLessons && totalLicenciaturaLessons > 0;
   const isMaestriaUnlocked = allLicenciaturaCompleted || bypassUnlocked;
 
+  const totalMaestriaLessons = maestriaCourses.reduce((sum, c) => sum + c.lessons.length, 0);
+  const completedMaestriaLessons = maestriaCourses.reduce((sum, c) => {
+    return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
+  }, 0);
+  const allMaestriaCompleted = completedMaestriaLessons >= totalMaestriaLessons && totalMaestriaLessons > 0;
+  const isDoctoradoUnlocked = allMaestriaCompleted || bypassUnlocked;
+
   const calculateProgressForCourses = (courseList: Course[]) => {
     const total = courseList.length * 90;
     const completed = courseList.reduce((sum, c) => {
@@ -79,6 +88,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const bachilleratoProg = calculateProgressForCourses(basicCourses);
   const licenciaturaProg = calculateProgressForCourses(licenciaturaCourses);
   const maestriaProg = calculateProgressForCourses(maestriaCourses);
+  const doctoradoProg = calculateProgressForCourses(doctoradoCourses);
 
   // Grades calculations
   const courseGradesList = courses.map(course => {
@@ -116,6 +126,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const bachilleratoGradesList = courseGradesList.filter(cg => cg.type === 'BIBLE_STUDY' || cg.type === 'SPECIALIZED');
   const licenciaturaGradesList = courseGradesList.filter(cg => cg.type === 'LICENCIATURA');
   const maestriaGradesList = courseGradesList.filter(cg => cg.type === 'MAESTRIA');
+  const doctoradoGradesList = courseGradesList.filter(cg => cg.type === 'DOCTORADO');
 
   const getStatsForLevel = (list: typeof courseGradesList) => {
     const started = list.filter(cg => cg.average !== null);
@@ -237,6 +248,33 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                </div>
             </div>
          </div>
+
+         {/* Doctorado */}
+         <div className={!isDoctoradoUnlocked ? "opacity-60 grayscale" : ""}>
+            <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
+               <ShieldCheck size={14}/> Doctorado {!isDoctoradoUnlocked && <Lock size={12} className="ml-1"/>}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
+                     <BarChart3 size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Avance Global</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{doctoradoProg.percentage}%</div>
+                  </div>
+               </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                     <CheckCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{doctoradoProg.completed} <span className="text-sm text-gray-400 font-normal">/ {doctoradoProg.total}</span></div>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
 
       <div className="flex items-center gap-4 md:gap-6 mb-8 border-b border-[#E0D7C6] overflow-x-auto hide-scrollbar whitespace-nowrap relative">
@@ -312,7 +350,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             </section>
           )}
 
-          {filteredBibleStudies.length > 0 && (
+          {filteredMaestria.length > 0 && (
             <section className="animate-in fade-in slide-in-from-bottom-10 duration-500">
               <div className="flex items-center gap-3 mb-6">
                 <BookOpen className="text-[#7F1D1D]" size={24} />
@@ -322,6 +360,91 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                 {filteredBibleStudies.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
               </div>
             </section>
+          )}
+
+          {/* DOCTORADO */}
+          {(query === '' || filteredDoctorado.length > 0) && (
+          <section className="border-t border-[#E0D7C6]/60 pt-10 animate-in fade-in slide-in-from-bottom-12 duration-500 space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded bg-[#7F1D1D] text-white flex items-center justify-center shrink-0 shadow-sm border border-red-900">
+                   <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-serif font-bold text-[#1A2533]">Doctorado en Divinidades</h2>
+                  <p className="text-xs text-gray-500 font-sans mt-0.5">Máximo nivel de excelencia académica para la investigación teológica y el magisterio eclesial.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 self-start md:self-auto">
+                <div className={`px-2.5 py-1 rounded-full text-xs font-bold font-sans flex items-center gap-1.5 border transition-all ${
+                  isDoctoradoUnlocked 
+                    ? 'bg-red-50 text-red-900 border-red-200 shadow-xs' 
+                    : 'bg-gray-100 text-gray-500 border-gray-200'
+                }`}>
+                  {isDoctoradoUnlocked ? (
+                    <>
+                      <Unlock size={12} className="text-red-700 animate-pulse" />
+                      GRADO CUMBRE DESBLOQUEADO
+                    </>
+                  ) : (
+                    <>
+                      <Lock size={12} className="text-gray-400" />
+                      DOCTORADO BLOQUEADO
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {!isDoctoradoUnlocked ? (
+              <div className="bg-[#FAF9F6] border border-[#E0D7C6] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 font-sans">
+                <div className="space-y-1.5 flex-1">
+                  <h4 className="text-sm font-bold text-[#7F1D1D] flex items-center gap-1.5">
+                    <Lock size={16} /> Prerrequisito: Cumplir Maestría Previa
+                  </h4>
+                  <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
+                    El ingreso al Doctorado requiere haber completado satisfactoriamente el grado de Maestría ({completedMaestriaLessons}/{totalMaestriaLessons} lecciones completadas). Este nivel está reservado para el estudio crítico y la producción de conocimiento teológico original.
+                  </p>
+                </div>
+                
+                <div className="shrink-0 text-center md:text-right space-y-1.5">
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Avance Maestría</div>
+                  <div className="text-2xl font-serif font-black text-[#1A2533]">
+                    {completedMaestriaLessons} <span className="text-sm text-gray-400 font-normal">/ {totalMaestriaLessons} Clases</span>
+                  </div>
+                  <div className="w-36 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-auto md:ml-auto">
+                    <div className="h-full bg-red-900" style={{ width: `${totalMaestriaLessons > 0 ? (completedMaestriaLessons / totalMaestriaLessons) * 100 : 0}%` }} />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-red-50/40 border border-red-200 rounded-xl p-5 md:p-6 flex items-center gap-4 animate-in zoom-in-95 duration-500 font-sans">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-700 shrink-0 select-none">
+                  <ShieldCheck size={22} strokeWidth={1.7} />
+                </div>
+                <div className="space-y-0.5">
+                  <div className="text-[10px] font-bold text-red-800 uppercase tracking-widest">Admisión Doctoral</div>
+                  <h4 className="text-sm font-bold text-[#1a2533]">¡Bienvenido al Nivel Doctoral!</h4>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    Su trayectoria académica lo ha traído hasta aquí. Usted forma parte de la élite de investigadores autorizados para cursar las ramas doctorales del Seminario.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              {filteredDoctorado.map(course => (
+                <CourseCard 
+                  key={course.id} 
+                  course={course} 
+                  progress={progress} 
+                  onSelectCourse={isDoctoradoUnlocked ? onSelectCourse : () => {}} 
+                  isLocked={!isDoctoradoUnlocked}
+                />
+              ))}
+            </div>
+          </section>
           )}
 
           {/* LICENCIATURA EN TEOLOGÍA SUPERIOR */}
@@ -546,7 +669,8 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
           {[
             { key: 'BACHILLERATO', title: 'Bachillerato en Teología', list: bachilleratoGradesList, isUnlocked: true, lockedMessage: '' },
             { key: 'LICENCIATURA', title: 'Licenciatura en Teología Superior', list: licenciaturaGradesList, isUnlocked: isLicenciaturaUnlocked, lockedMessage: 'Para acceder a la evaluación y constancia de materias de Licenciatura, primero debe completar el 100% de los cursos base del Bachillerato.' },
-            { key: 'MAESTRIA', title: 'Maestría en Divinidades', list: maestriaGradesList, isUnlocked: isMaestriaUnlocked, lockedMessage: 'Para acceder a la evaluación y constancia de materias de Maestría, primero debe completar el 100% de los cursos del grado de Licenciatura.' }
+            { key: 'MAESTRIA', title: 'Maestría en Divinidades', list: maestriaGradesList, isUnlocked: isMaestriaUnlocked, lockedMessage: 'Para acceder a la evaluación y constancia de materias de Maestría, primero debe completar el 100% de los cursos del grado de Licenciatura.' },
+            { key: 'DOCTORADO', title: 'Doctorado en Divinidades', list: doctoradoGradesList, isUnlocked: isDoctoradoUnlocked, lockedMessage: 'Para acceder a la evaluación y constancia de materias de Doctorado, primero debe completar el 100% de los cursos del grado de Maestría.' }
           ].map((levelData) => {
             const { average: globalGradeAverage, allGradedLessons: allGradedLessonsForTab, lessonAverage: globalLessonAverage } = getStatsForLevel(levelData.list);
 
@@ -568,7 +692,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                       <GraduationCap size={12} /> Registro Académico Calificado
                     </span>
                     <h2 className="text-2xl md:text-3xl font-serif font-bold text-white tracking-tight">
-                      Boleta Oficial - {levelData.key === 'BACHILLERATO' ? 'Bachillerato' : levelData.key === 'LICENCIATURA' ? 'Licenciatura' : 'Maestría'}
+                      Boleta Oficial - {levelData.key === 'BACHILLERATO' ? 'Bachillerato' : levelData.key === 'LICENCIATURA' ? 'Licenciatura' : levelData.key === 'MAESTRIA' ? 'Maestría' : 'Doctorado'}
                     </h2>
                     <p className="text-xs text-opacity-80 text-white font-sans max-w-xl">
                       Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{customProfile?.fullName || user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño y convalidaciones del tribunal docente.
@@ -578,7 +702,8 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                   <div className={`border p-4 rounded-lg flex flex-col md:items-end justify-center shrink-0 min-w-[200px] text-left md:text-right ${
                     levelData.key === 'BACHILLERATO' ? 'bg-[#2C3E50]/40 border-[#3E5C76]/30' :
                     levelData.key === 'LICENCIATURA' ? 'bg-amber-950/40 border-amber-800/50' :
-                    'bg-blue-950/40 border-blue-800/50'
+                    levelData.key === 'MAESTRIA' ? 'bg-blue-950/40 border-blue-800/50' :
+                    'bg-red-950/40 border-red-800/50'
                   }`}>
                     <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest font-sans mb-1">Promedio General</span>
                     <span className="text-4xl font-serif font-black text-white leading-none">
@@ -670,11 +795,14 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                                 <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
                                   cg.type === 'BIBLE_STUDY' ? 'bg-[#F2EFE9] text-[#7F1D1D] border border-[#E0D7C6]/60' : 
                                   cg.type === 'SPECIALIZED' ? 'bg-blue-50 text-blue-950 border border-blue-100' :
-                                  cg.type === 'LICENCIATURA' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 'bg-[#1A2533] text-[#FDE68A] border border-[#3E5C76]'
+                                  cg.type === 'LICENCIATURA' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 
+                                  cg.type === 'MAESTRIA' ? 'bg-[#1A2533] text-[#FDE68A] border border-[#3E5C76]' :
+                                  'bg-red-50 text-red-900 border border-red-200'
                                 }`}>
                                   {cg.type === 'BIBLE_STUDY' ? 'Estudio Bíblico' : 
                                    cg.type === 'SPECIALIZED' ? 'Especializado' : 
-                                   cg.type === 'LICENCIATURA' ? 'Licenciatura' : 'Maestría'}
+                                   cg.type === 'LICENCIATURA' ? 'Licenciatura' : 
+                                   cg.type === 'MAESTRIA' ? 'Maestría' : 'Doctorado'}
                                 </span>
                                 
                                 <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${
@@ -826,11 +954,13 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
     >
       <div className="p-6 md:p-8 flex-1 w-full relative">
          <div className="text-[10px] md:text-xs font-sans text-gray-500 uppercase tracking-widest mb-2 flex items-center justify-between gap-2">
-            <span className={course.type === 'LICENCIATURA' ? 'text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200' : course.type === 'MAESTRIA' ? 'text-blue-800 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200' : 'text-[#7F1D1D] font-bold'}>
+            <span className={course.type === 'LICENCIATURA' ? 'text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200' : course.type === 'MAESTRIA' ? 'text-blue-800 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200' : course.type === 'DOCTORADO' ? 'text-red-900 font-bold bg-red-50 px-2 py-0.5 rounded border border-red-200' : 'text-[#7F1D1D] font-bold'}>
               {course.type === 'LICENCIATURA' 
                 ? `Licenciatura • ${course.durationMonths || 6} Meses` 
                 : course.type === 'MAESTRIA'
                 ? `Maestría • ${course.durationMonths || 12} Meses`
+                : course.type === 'DOCTORADO'
+                ? `Doctorado • ${course.durationMonths || 18} Meses`
                 : 'Mínimo 3 Meses'}
             </span>
             {isLocked && (
@@ -853,7 +983,7 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
            </div>
            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
              <div className={`h-full rounded-full transition-all duration-500 ${
-               course.type === 'LICENCIATURA' ? 'bg-[#D97706]' : course.type === 'MAESTRIA' ? 'bg-blue-800' : 'bg-[#7F1D1D]'
+               course.type === 'LICENCIATURA' ? 'bg-[#D97706]' : course.type === 'MAESTRIA' ? 'bg-blue-800' : course.type === 'DOCTORADO' ? 'bg-red-900' : 'bg-[#7F1D1D]'
              }`} style={{ width: `${percentage}%` }}></div>
            </div>
          </div>
