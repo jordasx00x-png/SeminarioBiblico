@@ -29,25 +29,13 @@ export default function App() {
   const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string}>({});
   const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('darkMode') === 'true';
-    } catch (e) {
-      return false;
-    }
-  });
-
+  // Dark mode has been removed, forcing light mode
   useEffect(() => {
-    console.log('darkMode changed:', darkMode);
     try {
-      localStorage.setItem('darkMode', String(darkMode));
-    } catch (e) {}
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
+      localStorage.removeItem('darkMode');
       document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
+    } catch (e) {}
+  }, []);
 
 
   useEffect(() => {
@@ -99,17 +87,7 @@ export default function App() {
   return (
     <div className={`min-h-screen bg-[#FDFCFB] text-[#2C2C2C] dark:bg-[#121212] dark:text-stone-100 font-serif flex flex-col md:flex-row relative transition-colors duration-300`}>
       <DailyVerseNotification />
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className="hidden md:flex fixed top-4 right-4 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur shadow-lg border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all active:scale-95"
-        aria-label="Alternar tema"
-      >
-        {darkMode ? (
-          <Lightbulb size={20} className="text-amber-500 fill-amber-400" />
-        ) : (
-          <Lightbulb size={20} className="text-gray-500" />
-        )}
-      </button>
+
       
       {/* Mobile top bar */}
       <div className="md:hidden bg-[#1A2533] text-white px-4 md:px-5 py-3 md:py-4 flex justify-between items-center shadow-lg border-b border-[#2C3E50] sticky top-0 z-50">
@@ -120,17 +98,6 @@ export default function App() {
             <h1 className="text-base font-bold tracking-tight text-[#E0D7C6] truncate">SEMINARIO<span className="text-white/40 mx-1">|</span><span className="text-[10px] font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
          </div>
          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 text-gray-300 hover:text-white transition-colors rounded-lg bg-white/5 active:bg-white/10"
-              aria-label="Alternar tema"
-            >
-               {darkMode ? (
-                 <Lightbulb size={18} className="text-amber-400 fill-amber-400" />
-               ) : (
-                 <Lightbulb size={18} />
-               )}
-            </button>
             <button 
               onClick={() => setSidebarOpen(prev => !prev)} 
               className="p-2 text-gray-300 hover:text-white transition-colors rounded-lg bg-white/5 active:bg-white/10"
