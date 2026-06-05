@@ -107,11 +107,14 @@ export default function App() {
       
       {/* Mobile top bar */}
       <div className="md:hidden bg-white text-[#1A2533] px-4 md:px-5 py-3 md:py-4 flex justify-between items-center shadow-sm border-b border-[#E0D7C6] sticky top-0 z-50">
-         <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded bg-[#7F1D1D] flex items-center justify-center text-xs text-white ring-1 ring-black/5 shrink-0">
-               {customProfile?.fullName ? customProfile.fullName.charAt(0).toUpperCase() : (user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U')}
+         <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#1A2533] flex items-center justify-center shadow-sm shrink-0">
+               <span className="font-serif font-bold text-[#E0D7C6] text-sm tracking-widest leading-none">STD</span>
             </div>
-            <h1 className="text-base font-bold tracking-tight text-[#1A2533] truncate">SEMINARIO<span className="text-[#1A2533]/30 mx-1">|</span><span className="text-[10px] font-normal opacity-80 uppercase tracking-widest">Virtual</span></h1>
+            <h1 className="text-[15px] font-bold tracking-tight text-[#1A2533] flex flex-col justify-center leading-tight">
+              SEMINARIO
+              <span className="text-[8px] font-sans font-bold opacity-70 uppercase tracking-[0.2em]">Teológico Digital</span>
+            </h1>
          </div>
          <div className="flex items-center gap-1.5 shrink-0">
             <button

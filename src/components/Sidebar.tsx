@@ -41,9 +41,15 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
       
       {/* Mobile-only menu header with Close button */}
       <div className="p-5 border-b border-[#2C3E50] dark:border-zinc-800 flex items-center justify-between md:hidden bg-[#151D28] dark:bg-zinc-900">
-        <h1 className="text-base font-bold tracking-tight text-[#E0D7C6]">
-          SEMINARIO<br/><span className="text-[10px] font-normal opacity-60 uppercase tracking-widest font-sans">Teológico Digital</span>
-        </h1>
+        <div className="flex items-center gap-3">
+           <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center border border-white/20 shrink-0">
+              <span className="font-serif font-bold text-[#E0D7C6] text-sm tracking-widest leading-none">STD</span>
+           </div>
+           <h1 className="text-[15px] font-bold tracking-tight text-[#E0D7C6] flex flex-col justify-center leading-tight">
+             SEMINARIO
+             <span className="text-[8px] font-sans font-bold opacity-70 uppercase tracking-[0.2em] text-[#E0D7C6]">Teológico Digital</span>
+           </h1>
+        </div>
         {onClose && (
           <button 
             onClick={onClose}
@@ -55,10 +61,16 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
         )}
       </div>
 
-      <div className="p-6 border-b border-[#2C3E50] dark:border-zinc-800 hidden md:flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight text-[#E0D7C6]">
-          SEMINARIO<br/><span className="text-sm font-normal opacity-80 uppercase tracking-[0.2em] font-sans">Teológico Digital</span>
-        </h1>
+      <div className="p-5 border-b border-[#2C3E50] dark:border-zinc-800 hidden md:flex items-center justify-between">
+        <div className="flex items-center gap-3">
+           <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/20 shrink-0 shadow-lg">
+              <span className="font-serif font-bold text-[#E0D7C6] text-sm tracking-widest leading-none">STD</span>
+           </div>
+           <h1 className="text-[16px] font-bold tracking-tight text-[#E0D7C6] flex flex-col justify-center leading-tight">
+             SEMINARIO
+             <span className="text-[9px] font-sans font-bold opacity-70 uppercase tracking-[0.2em] text-[#E0D7C6]">Teológico Digital</span>
+           </h1>
+        </div>
         {onToggleDesktop && (
           <button 
             onClick={onToggleDesktop} 
