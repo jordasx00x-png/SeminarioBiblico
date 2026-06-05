@@ -275,6 +275,24 @@ const SPECIFIC_TITLES: CourseTitles = {
     "El Sínodo de Dort y los Cánones frente al Arminismo",
     "Historia Confesional: El surgimiento de los Credos Europeos",
     "La Teología de la Puritana en la Defensa de la Ortodoxia"
+  ],
+  "lic-consejeria-biblica": [
+    "Suficiencia de las Escrituras en el Cuidado Pastoral",
+    "Diagnóstico de Corazón y los Ídolos del Alma",
+    "Resolución de Conflictos en el Matrimonio Cristiano",
+    "El Consejero Bíblico: Gracia y Verdad Pastoral"
+  ],
+  "lic-misionologia": [
+    "Fundamentos Teológicos de la Missio Dei",
+    "Antropología Práctica y Contextualización Bíblica",
+    "Estrategias de Plantación Eclesiástica Orada",
+    "La Sangre de los Mártires y Despertares Misioneros"
+  ],
+  "lic-educacion-cristiana": [
+    "Cosmovisión de la Filosofía Educativa Consagrada",
+    "El Papel del Hogar (Deuteronomio 6) en la Escuela",
+    "Desarrollo Curricular Analítico del Antiguo Testamento",
+    "Espiritualidad del Magisterio: Cuidar de sí mismo y de la doctrina"
   ]
 };
 
@@ -297,7 +315,16 @@ const THEOLOGICAL_NOUNS: Record<string, string[]> = {
   "bases-fundamentales": ["el Principio de Sola Escritura", "las Verdades Fundamentales", "el Sínodo de Dort", "las Doctrinas de Calvino", "la Confesión Filosófica", "los Cinco Símbolos", "los Pactos Eternos", "el Gobierno de Dios", "la Redención Particular", "el Arrepentimiento Salvífico"],
   "lic-teologia-sistematica": ["la Soteriología Dogmática", "los Modelos Escatológicos", "el Milenio Simbólico", "la Justificación Imputada", "los Atributos Trinitarios", "la Perseverancia de Santos", "el Ordo Salutis", "el Juicio Final", "la Antropología del Cuerpo", "los Pactos Eternos"],
   "lic-idiomas-biblicos": ["las Raíces Semíticas", "los Casos Flexivos", "el Aspecto del Aoristo", "el Participio Conjunto", "la Sintaxis Poética", "los Códices Antiguos", "los Quiasmos de Isaías", "el Estado Constructo", "los Cláusulas de Propósito", "la Crítica del Idioma"],
-  "lic-historia-dogma": ["los Concilios Ecuménicos", "la Herejía Arriana", "las Doctrinas de Calcedonia", "la Escuela de Antioquía", "los Credos de la Reforma", "la Teología Medieval", "el Gran Cisma del 1054", "los Puritanos Ingleses", "la Confesión de Westminster", "las Cinco Solas"]
+  "lic-historia-dogma": ["los Concilios Ecuménicos", "la Herejía Arriana", "las Doctrinas de Calcedonia", "la Escuela de Antioquía", "los Credos de la Reforma", "la Teología Medieval", "el Gran Cisma del 1054", "los Puritanos Ingleses", "la Confesión de Westminster", "las Cinco Solas"],
+  "lic-consejeria-biblica": ["el Cuidado Pastoral", "los Ídolos del Corazón", "el Arrepentimiento Genuino", "la Confesión de Pecados", "el Vínculo Matrimonial", "la Ansiedad del Alma", "las Cargas Espirituales", "la Crianza Cristiana"],
+  "lic-misionologia": ["la Antropología Cultural", "los Despertares Misioneros", "la Missio Dei", "el Sincretismo Religioso", "la Plantación de Iglesias", "la Autonomía Local", "el Cuidado del Mártir"],
+  "lic-educacion-cristiana": ["la Filosofía Educativa", "el Mandato de Deuteronomio", "el Currículo Expositivo", "el Catecismo Menor", "la Instrucción Sapiencial", "el Magisterio Espiritual"],
+  "mae-teologia-sistematica": ["Epistemología Teológica", "Aseidad Divina", "Los Decretos Inmutables", "El Pacto Federal", "Escatología Dogmática", "Antropología del Pecado Originario"],
+  "mae-idiomas-biblicos": ["Crítica Textual Superior", "Análisis Discursivo Epistolar", "Poética de Proverbios", "Paralelismos Hebreos", "Gramática del Arameo", "Transmisión Manuscrita Griega"],
+  "mae-historia-dogma": ["La Evolución del Canon", "Los Padres Capadocios", "Cristología de Calcedonia", "Misticismo Medieval", "Cismas Históricos", "La Epistemología de Nicea"],
+  "mae-consejeria-biblica": ["La Antropología Dicotómica", "Consejería Integrativa", "Terapia de Traumas Complejos", "La Biología y la Depresión", "Gracia en la Desolación", "Restauración Psicoterapéutica"],
+  "mae-misionologia": ["Teología de la Misión Soberana", "El Arminianismo Misional Evaluado", "Estrategia Post-Secular", "Plantación en Pueblos Reacios", "Demografía del Islam", "Antropología Sociológica Misional"],
+  "mae-educacion-cristiana": ["Filosofía del Trivium Cívico", "Señorío Epistemológico en Ciencia", "Diseño de Liderazgo Superior", "Apologética Académica Magisterial", "Luchando Contra el Secularismo Histórico", "El Liderazgo de Seminarios"]
 };
 
 export function getLessonTitleForDay(courseId: string, day: number, realTitle?: string): string {

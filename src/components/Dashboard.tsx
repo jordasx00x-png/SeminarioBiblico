@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Course, UserProgress } from '../types';
-import { BookOpen, Award, CheckCircle, PlayCircle, BarChart3, Calendar as CalendarIcon, LayoutDashboard, ChevronDown, ChevronUp, GraduationCap, TrendingUp, FileText, Lock, Unlock, ShieldCheck } from 'lucide-react';
+import { BookOpen, Award, CheckCircle, PlayCircle, BarChart3, Calendar as CalendarIcon, LayoutDashboard, ChevronDown, ChevronUp, GraduationCap, TrendingUp, FileText, Lock, Unlock, ShieldCheck, Info } from 'lucide-react';
 import { User } from 'firebase/auth';
 import { StudyCalendar } from './StudyCalendar';
 
@@ -28,8 +28,9 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
   const bibleStudies = courses.filter(c => c.type === 'BIBLE_STUDY');
   const specialized = courses.filter(c => c.type === 'SPECIALIZED');
   const licenciaturaCourses = courses.filter(c => c.type === 'LICENCIATURA');
+  const maestriaCourses = courses.filter(c => c.type === 'MAESTRIA');
 
-  const basicCourses = courses.filter(c => c.type !== 'LICENCIATURA');
+  const basicCourses = courses.filter(c => c.type === 'BIBLE_STUDY' || c.type === 'SPECIALIZED');
   const totalBasicLessons = basicCourses.reduce((sum, c) => sum + c.lessons.length, 0);
   const completedBasicLessons = basicCourses.reduce((sum, c) => {
     return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
@@ -46,8 +47,20 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
   const allBasicCompleted = completedBasicLessons >= totalBasicLessons && totalBasicLessons > 0;
   const isLicenciaturaUnlocked = allBasicCompleted || bypassUnlocked;
 
+  const totalLicenciaturaLessons = licenciaturaCourses.reduce((sum, c) => sum + c.lessons.length, 0);
+  const completedLicenciaturaLessons = licenciaturaCourses.reduce((sum, c) => {
+    return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
+  }, 0);
+  const allLicenciaturaCompleted = completedLicenciaturaLessons >= totalLicenciaturaLessons && totalLicenciaturaLessons > 0;
+  const isMaestriaUnlocked = allLicenciaturaCompleted || bypassUnlocked;
+
   const calculateGlobalProgress = () => {
-    const activeCourses = isLicenciaturaUnlocked ? courses : basicCourses;
+    let activeCourses = basicCourses;
+    if (isMaestriaUnlocked) {
+      activeCourses = courses;
+    } else if (isLicenciaturaUnlocked) {
+      activeCourses = [...basicCourses, ...licenciaturaCourses];
+    }
     const total = activeCourses.length * 90;
     const completed = activeCourses.reduce((sum, c) => {
       const completedReal = c.lessons.filter(l => progress.completedLessons[l.id]).length;
@@ -92,16 +105,19 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
     };
   });
 
-  // Global average is calculated over courses that have at least one completed lesson
-  const startedCourses = courseGradesList.filter(cg => cg.average !== null);
-  const globalGradeAverage = startedCourses.length > 0 
-    ? Math.round(startedCourses.reduce((sum, curr) => sum + (curr.average || 0), 0) / startedCourses.length) 
-    : null;
+  const bachilleratoGradesList = courseGradesList.filter(cg => cg.type === 'BIBLE_STUDY' || cg.type === 'SPECIALIZED');
+  const licenciaturaGradesList = courseGradesList.filter(cg => cg.type === 'LICENCIATURA');
+  const maestriaGradesList = courseGradesList.filter(cg => cg.type === 'MAESTRIA');
 
-  const allGradedLessons = Object.values(progress.completedLessons).map(l => l.score);
-  const globalLessonAverage = allGradedLessons.length > 0
-    ? Math.round(allGradedLessons.reduce((sum, score) => sum + score, 0) / allGradedLessons.length)
-    : null;
+  const getStatsForLevel = (list: typeof courseGradesList) => {
+    const started = list.filter(cg => cg.average !== null);
+    const average = started.length > 0 ? Math.round(started.reduce((sum, curr) => sum + (curr.average || 0), 0) / started.length) : null;
+    const allGradedLessons = list.flatMap(cg => cg.lessons.map(l => l.score).filter(s => s !== null)) as number[];
+    const lessonAverage = allGradedLessons.length > 0
+      ? Math.round(allGradedLessons.reduce((sum, score) => sum + score, 0) / allGradedLessons.length)
+      : null;
+    return { average, allGradedLessons, lessonAverage };
+  };
 
   const toggleCourseExpand = (courseId: string) => {
     setExpandedCourses(prev => ({
@@ -188,6 +204,19 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
 
       {activeTab === 'courses' ? (
         <div className="space-y-12">
+          {/* GitHub Export Message */}
+          <div className="bg-[#1A2533] border border-[#2C3E50] shadow-sm rounded-xl p-5 flex items-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-[#E0D7C6]">
+              <Info size={20} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-bold text-white text-sm font-sans tracking-wide">Exportar a GitHub</h3>
+              <p className="text-xs text-gray-300 font-sans leading-relaxed max-w-3xl">
+                Para exportar este proyecto a su cuenta de GitHub o descargarlo localmente como archivo ZIP, haga clic en el <strong>menú de configuración (icono de tres puntos, esquina superior derecha)</strong> en la interfaz de AI Studio y seleccione <strong>"Export to GitHub"</strong> o <strong>"Download ZIP"</strong>.
+              </p>
+            </div>
+          </div>
+
           <section className="animate-in fade-in slide-in-from-bottom-8 duration-500">
             <div className="flex items-center gap-3 mb-6">
               <Award className="text-[#7F1D1D]" size={24} />
@@ -300,6 +329,89 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
               ))}
             </div>
           </section>
+
+          {/* MAESTRÍA */}
+          <section className="border-t border-[#E0D7C6]/60 pt-10 animate-in fade-in slide-in-from-bottom-12 duration-500 space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded bg-[#1A2533] text-[#FDE68A] flex items-center justify-center shrink-0 shadow-sm border border-[#3E5C76]">
+                   <Award size={18} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-serif font-bold text-[#1A2533]">Maestría en Divinidades</h2>
+                  <p className="text-xs text-gray-500 font-sans mt-0.5">Grado de posgrado máximo para erudición y liderazgo formativo global.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 self-start md:self-auto">
+                <div className={`px-2.5 py-1 rounded-full text-xs font-bold font-sans flex items-center gap-1.5 border transition-all ${
+                  isMaestriaUnlocked 
+                    ? 'bg-blue-50 text-blue-900 border-blue-200 shadow-xs' 
+                    : 'bg-gray-100 text-gray-500 border-gray-200'
+                }`}>
+                  {isMaestriaUnlocked ? (
+                    <>
+                      <Unlock size={12} className="text-blue-700 animate-pulse" />
+                      POSGRADO DESBLOQUEADO
+                    </>
+                  ) : (
+                    <>
+                      <Lock size={12} className="text-gray-400" />
+                      MAESTRÍA BLOQUEADA
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {!isMaestriaUnlocked ? (
+              <div className="bg-[#FAF9F6] border border-[#E0D7C6] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 font-sans">
+                <div className="space-y-1.5 flex-1">
+                  <h4 className="text-sm font-bold text-[#7F1D1D] flex items-center gap-1.5">
+                    <Lock size={16} /> Prerrequisito: Cumplir Licenciatura Previa
+                  </h4>
+                  <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
+                    Las materias del programa de Maestría están reservadas para alumnos que hayan acreditado holgadamente su grado de Licenciatura íntegro ({completedLicenciaturaLessons}/{totalLicenciaturaLessons} lecciones completadas) y dispongan del rigor dogmático requerido. No hay excepciones evaluativas para la postulación magisterial.
+                  </p>
+                </div>
+                
+                <div className="shrink-0 text-center md:text-right space-y-1.5">
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Avance Licenciatura</div>
+                  <div className="text-2xl font-serif font-black text-[#1A2533]">
+                    {completedLicenciaturaLessons} <span className="text-sm text-gray-400 font-normal">/ {totalLicenciaturaLessons} Clases</span>
+                  </div>
+                  <div className="w-36 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-auto md:ml-auto">
+                    <div className="h-full bg-blue-900" style={{ width: `${totalLicenciaturaLessons > 0 ? (completedLicenciaturaLessons / totalLicenciaturaLessons) * 100 : 0}%` }} />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-blue-50/40 border border-blue-200 rounded-xl p-5 md:p-6 flex items-center gap-4 animate-in zoom-in-95 duration-500 font-sans">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 select-none">
+                  <ShieldCheck size={22} strokeWidth={1.7} />
+                </div>
+                <div className="space-y-0.5">
+                  <div className="text-[10px] font-bold text-blue-800 uppercase tracking-widest">Admisión de Posgrado</div>
+                  <h4 className="text-sm font-bold text-[#1a2533]">¡Estatus de Maestro Reconocido!</h4>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    Felicidades por su graduación previa. Usted pertenece al cuadro de honor autorizado para cursar las altas ramas teológicas de la Maestría dogmática para edificación eclesial avanzada.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              {maestriaCourses.map(course => (
+                <CourseCard 
+                  key={course.id} 
+                  course={course} 
+                  progress={progress} 
+                  onSelectCourse={isMaestriaUnlocked ? onSelectCourse : () => {}} 
+                  isLocked={!isMaestriaUnlocked}
+                />
+              ))}
+            </div>
+          </section>
         </div>
       ) : activeTab === 'calendar' ? (
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
@@ -312,84 +424,9 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
           })()}
         </div>
       ) : (
-        <div className="space-y-8 animate-in fade-in duration-500">
-          {/* Header of the Boleta */}
-          <div className="bg-[#1A2533] text-white p-6 md:p-8 rounded-xl border border-[#2C3E50] shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#7F1D1D] text-[#FDE68A] uppercase tracking-widest border border-[#7F1D1D]/50">
-                <GraduationCap size={12} /> Registro Académico Calificado
-              </span>
-              <h2 className="text-2xl md:text-3xl font-serif font-bold text-white tracking-tight">Boleta de Calificaciones Oficial</h2>
-              <p className="text-xs text-gray-300 font-sans max-w-xl">
-                Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño, aciertos en exámenes comprensivos y convalidaciones del tribunal docente.
-              </p>
-            </div>
-            
-            <div className="bg-[#2C3E50]/40 border border-[#3E5C76]/30 p-4 rounded-lg flex flex-col md:items-end justify-center shrink-0 min-w-[200px] text-left md:text-right">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-1">Promedio General</span>
-              <span className="text-4xl font-serif font-black text-white leading-none">
-                {globalGradeAverage !== null ? `${globalGradeAverage}%` : 'S/C'}
-              </span>
-              <span className="text-[10px] font-sans text-gray-400 mt-2 block italic leading-snug">
-                {globalGradeAverage === null ? 'Ninguna clase calificada' :
-                 globalGradeAverage >= 90 ? 'Mención Honorífica' :
-                 globalGradeAverage >= 80 ? 'Aprobado con Excelencia' :
-                 globalGradeAverage >= 70 ? 'Aprobado con Honores' : 'Aprobado'}
-              </span>
-            </div>
-          </div>
-
-          {/* Academic KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-red-50 text-[#7F1D1D] border border-red-100 flex items-center justify-center shrink-0">
-                <TrendingUp size={20} />
-              </div>
-              <div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Lecciones Cursadas</div>
-                <div className="text-lg font-black text-[#1A2533]">{allGradedLessons.length} acreditadas</div>
-              </div>
-            </div>
-            
-            <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shrink-0">
-                <Award size={20} />
-              </div>
-              <div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Cursos Graduados</div>
-                <div className="text-lg font-black text-[#1A2533]">
-                  {courseGradesList.filter(cg => cg.average !== null && cg.completedCount === cg.lessonsCount).length} de {courses.length}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
-                <CheckCircle size={20} />
-              </div>
-              <div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Promedio Parcial</div>
-                <div className="text-lg font-black text-[#1A2533]">
-                  {globalLessonAverage !== null ? `${globalLessonAverage}%` : '—'}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
-                <FileText size={20} />
-              </div>
-              <div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Hitos de Bloque</div>
-                <div className="text-lg font-black text-[#1A2533]">
-                  {progress.completedBlockExams ? Object.keys(progress.completedBlockExams).length : 0} aprobados
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <div className="space-y-16 animate-in fade-in duration-500">
           {/* List Controls */}
-          <div className="flex justify-between items-center border-b border-[#E0D7C6] pb-4 pt-4">
+          <div className="flex justify-between items-center border-b border-[#E0D7C6] pb-4">
             <h3 className="text-xl font-bold text-[#1A2533] font-serif">Boleta Detallada por Asignaturas</h3>
             <button
               onClick={toggleAllCourses}
@@ -402,136 +439,250 @@ export function Dashboard({ user, courses, progress, onSelectCourse }: Dashboard
             </button>
           </div>
 
-          {/* Detail List of Courses */}
-          <div className="space-y-4">
-            {courseGradesList.map((cg) => {
-              const isExpanded = !!expandedCourses[cg.id];
-              const total = cg.lessonsCount;
-              const completed = cg.completedCount;
-              const hasGrades = cg.average !== null;
-              
-              return (
-                <div key={cg.id} className="bg-white border border-[#E0D7C6] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                  {/* Row Header */}
-                  <div 
-                    onClick={() => toggleCourseExpand(cg.id)}
-                    className="p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-[#FAF9F6] transition-colors"
-                  >
-                    <div className="space-y-1.5 flex-1 select-none">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-                          cg.type === 'BIBLE_STUDY' ? 'bg-[#F2EFE9] text-[#7F1D1D] border border-[#E0D7C6]/60' : 'bg-blue-50 text-blue-950 border border-blue-100'
-                        }`}>
-                          {cg.type === 'BIBLE_STUDY' ? 'Estudio Bíblico' : 'Especializado'}
-                        </span>
-                        
-                        <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${
-                          completed === total ? 'bg-emerald-50 text-emerald-700 shadow-xs' :
-                          completed > 0 ? 'bg-amber-50 text-amber-700 shadow-xs' :
-                          'bg-gray-100 text-gray-500'
-                        }`}>
-                          {completed === total ? 'Completado' :
-                           completed > 0 ? 'En Progreso' : 'Sin Iniciar'}
-                        </span>
-                      </div>
-                      
-                      <h4 className="font-bold text-[#1A2533] text-lg font-serif tracking-tight">{cg.title}</h4>
-                      
-                      <div className="flex items-center gap-4 text-xs text-gray-500 font-sans">
-                        <span>Lecciones: <strong>{completed} de {total}</strong></span>
-                        <div className="w-24 bg-gray-100 h-1.5 rounded-full overflow-hidden inline-block align-middle ml-1">
-                          <div className="h-full bg-[#7F1D1D]" style={{ width: `${Math.round((completed/total)*100)}%` }} />
-                        </div>
-                      </div>
-                    </div>
+          {[
+            { key: 'BACHILLERATO', title: 'Bachillerato en Teología', list: bachilleratoGradesList, isUnlocked: true, lockedMessage: '' },
+            { key: 'LICENCIATURA', title: 'Licenciatura en Teología Superior', list: licenciaturaGradesList, isUnlocked: isLicenciaturaUnlocked, lockedMessage: 'Para acceder a la evaluación y constancia de materias de Licenciatura, primero debe completar el 100% de los cursos base del Bachillerato.' },
+            { key: 'MAESTRIA', title: 'Maestría en Divinidades', list: maestriaGradesList, isUnlocked: isMaestriaUnlocked, lockedMessage: 'Para acceder a la evaluación y constancia de materias de Maestría, primero debe completar el 100% de los cursos del grado de Licenciatura.' }
+          ].map((levelData) => {
+            const { average: globalGradeAverage, allGradedLessons: allGradedLessonsForTab, lessonAverage: globalLessonAverage } = getStatsForLevel(levelData.list);
 
-                    {/* Course Grade display */}
-                    <div className="flex items-center gap-5 shrink-0 select-none">
-                      <div className="text-right">
-                        <div className="text-[9px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Promedio del Curso</div>
-                        <div className={`text-2xl font-black ${hasGrades ? 'text-[#1A2533]' : 'text-gray-300 font-normal italic text-sm'}`}>
-                          {hasGrades ? `${cg.average}%` : 'Pendiente'}
-                        </div>
-                      </div>
-                      
-                      <div className="w-8 h-8 rounded-full border border-[#E0D7C6]/60 flex items-center justify-center text-gray-400 bg-gray-50">
-                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            return (
+              <div key={levelData.key} className="space-y-6">
+                
+                {/* Header of the Boleta */}
+                <div className={`text-white p-6 md:p-8 rounded-xl border shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 ${
+                  levelData.key === 'BACHILLERATO' ? 'bg-[#1A2533] border-[#2C3E50]' :
+                  levelData.key === 'LICENCIATURA' ? 'bg-amber-900 border-amber-800' :
+                  'bg-blue-900 border-blue-800'
+                }`}>
+                  <div className="space-y-2">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                      levelData.key === 'BACHILLERATO' ? 'bg-[#7F1D1D] text-[#FDE68A] border-[#7F1D1D]/50' :
+                      levelData.key === 'LICENCIATURA' ? 'bg-amber-700 text-amber-100 border-amber-600' :
+                      'bg-blue-700 text-blue-100 border-blue-600'
+                    }`}>
+                      <GraduationCap size={12} /> Registro Académico Calificado
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-serif font-bold text-white tracking-tight">
+                      Boleta Oficial - {levelData.key === 'BACHILLERATO' ? 'Bachillerato' : levelData.key === 'LICENCIATURA' ? 'Licenciatura' : 'Maestría'}
+                    </h2>
+                    <p className="text-xs text-opacity-80 text-white font-sans max-w-xl">
+                      Historial certificado del creyente estudioso <strong className="text-white text-sm font-semibold">{user?.displayName || 'Estudioso'}</strong>. Detalla su desempeño y convalidaciones del tribunal docente.
+                    </p>
+                  </div>
+                  
+                  <div className={`border p-4 rounded-lg flex flex-col md:items-end justify-center shrink-0 min-w-[200px] text-left md:text-right ${
+                    levelData.key === 'BACHILLERATO' ? 'bg-[#2C3E50]/40 border-[#3E5C76]/30' :
+                    levelData.key === 'LICENCIATURA' ? 'bg-amber-950/40 border-amber-800/50' :
+                    'bg-blue-950/40 border-blue-800/50'
+                  }`}>
+                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest font-sans mb-1">Promedio General</span>
+                    <span className="text-4xl font-serif font-black text-white leading-none">
+                      {globalGradeAverage !== null ? `${globalGradeAverage}%` : 'S/C'}
+                    </span>
+                    <span className="text-[10px] font-sans text-gray-300 mt-2 block italic leading-snug">
+                      {globalGradeAverage === null ? 'Ninguna clase calificada' :
+                       globalGradeAverage >= 90 ? 'Mención Honorífica' :
+                       globalGradeAverage >= 80 ? 'Aprobado con Excelencia' :
+                       globalGradeAverage >= 70 ? 'Aprobado con Honores' : 'Aprobado'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Academic KPIs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-red-50 text-[#7F1D1D] border border-red-100 flex items-center justify-center shrink-0">
+                      <TrendingUp size={20} />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Lecciones Cursadas</div>
+                      <div className="text-lg font-black text-[#1A2533]">{allGradedLessonsForTab.length} acreditadas</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shrink-0">
+                      <Award size={20} />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Cursos Graduados</div>
+                      <div className="text-lg font-black text-[#1A2533]">
+                        {levelData.list.filter(cg => cg.average !== null && cg.completedCount === cg.lessonsCount).length} de {levelData.list.length}
                       </div>
                     </div>
                   </div>
 
-                  {/* Expanded Lessons Detail */}
-                  {isExpanded && (
-                    <div className="border-t border-[#E0D7C6]/60 bg-[#FAF9F6] p-5 md:p-6 animate-in slide-in-from-top duration-300 font-sans">
-                      <div className="text-[10px] font-bold text-[#7F1D1D] uppercase tracking-widest mb-4 pb-1.5 border-b border-[#E0D7C6]/30">
-                        Evaluación Continua por Temario
+                  <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+                      <CheckCircle size={20} />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Promedio Parcial</div>
+                      <div className="text-lg font-black text-[#1A2533]">
+                        {globalLessonAverage !== null ? `${globalLessonAverage}%` : '—'}
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-[#E0D7C6] p-5 rounded-xl shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
+                      <FileText size={20} />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Hitos de Bloque</div>
+                      <div className="text-lg font-black text-[#1A2533]">
+                        {levelData.key === 'BACHILLERATO' ? (progress.completedBlockExams ? Object.keys(progress.completedBlockExams).length : 0) : 0} aprobados
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {!levelData.isUnlocked && levelData.list.every(c => c.completedCount === 0) ? (
+                  <div className="bg-[#FAF9F6] border border-[#E0D7C6] rounded-xl p-12 text-center flex flex-col items-center justify-center">
+                    <div className="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-4">
+                      <Lock size={32} />
+                    </div>
+                    <h3 className="text-xl font-bold font-serif text-[#1A2533] mb-2">Grado de {levelData.key === 'LICENCIATURA' ? 'Licenciatura' : 'Maestría'} Bloqueado</h3>
+                    <p className="text-sm font-sans text-gray-500 max-w-md">{levelData.lockedMessage}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {levelData.list.length > 0 ? levelData.list.map(cg => {
+                      const isExpanded = !!expandedCourses[cg.id];
+                      const total = cg.lessonsCount;
+                      const completed = cg.completedCount;
+                      const hasGrades = cg.average !== null;
                       
-                      {cg.lessons.length === 0 ? (
-                        <p className="text-xs text-gray-400 italic">No hay clases registradas en este curso.</p>
-                      ) : (
-                        <div className="space-y-2.5">
-                          {cg.lessons.map((lesson) => {
-                            const isLCompleted = lesson.score !== null;
-                            return (
-                              <div 
-                                key={lesson.id} 
-                                className="flex items-center justify-between gap-4 py-2 px-3 bg-white border border-[#E0D7C6]/30 rounded-lg hover:shadow-xs transition-shadow"
-                              >
-                                <div className="flex items-center gap-2.5 overflow-hidden">
-                                  <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border text-[9px] font-bold tracking-tighter ${
-                                    isLCompleted ? 'bg-[#7F1D1D] text-white border-[#7F1D1D]' : 'bg-gray-50 text-gray-400 border-gray-200'
-                                  }`}>
-                                    D{lesson.day}
-                                  </div>
-                                  <span className="text-xs font-semibold text-gray-800 truncate">{lesson.title}</span>
-                                </div>
+                      return (
+                        <div key={cg.id} className="bg-white border border-[#E0D7C6] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                          {/* Row Header */}
+                          <div 
+                            onClick={() => toggleCourseExpand(cg.id)}
+                            className="p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-[#FAF9F6] transition-colors"
+                          >
+                            <div className="space-y-1.5 flex-1 select-none">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                                  cg.type === 'BIBLE_STUDY' ? 'bg-[#F2EFE9] text-[#7F1D1D] border border-[#E0D7C6]/60' : 
+                                  cg.type === 'SPECIALIZED' ? 'bg-blue-50 text-blue-950 border border-blue-100' :
+                                  cg.type === 'LICENCIATURA' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 'bg-[#1A2533] text-[#FDE68A] border border-[#3E5C76]'
+                                }`}>
+                                  {cg.type === 'BIBLE_STUDY' ? 'Estudio Bíblico' : 
+                                   cg.type === 'SPECIALIZED' ? 'Especializado' : 
+                                   cg.type === 'LICENCIATURA' ? 'Licenciatura' : 'Maestría'}
+                                </span>
                                 
-                                <div className="flex items-center gap-3 shrink-0">
-                                  <span className={`text-[10px] font-sans font-medium px-2 py-0.5 rounded ${
-                                    isLCompleted ? 'text-gray-500 bg-neutral-100' : 'text-gray-400 italic'
-                                  }`}>
-                                    {isLCompleted ? 'Acreditado' : 'Pendiente'}
-                                  </span>
-                                  <div className={`text-xs font-mono font-bold w-12 text-right ${isLCompleted ? 'text-[#1A2533]' : 'text-gray-300'}`}>
-                                    {isLCompleted ? `${lesson.score}%` : '——'}
-                                  </div>
+                                <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${
+                                  completed === total ? 'bg-emerald-50 text-emerald-700 shadow-xs' :
+                                  completed > 0 ? 'bg-amber-50 text-amber-700 shadow-xs' :
+                                  'bg-gray-100 text-gray-500'
+                                }`}>
+                                  {completed === total ? 'Completado' :
+                                   completed > 0 ? 'En Progreso' : 'Sin Iniciar'}
+                                </span>
+                              </div>
+                              
+                              <h4 className="font-bold text-[#1A2533] text-lg font-serif tracking-tight">{cg.title}</h4>
+                              
+                              <div className="flex items-center gap-4 text-xs text-gray-500 font-sans">
+                                <span>Lecciones: <strong>{completed} de {total}</strong></span>
+                                <div className="w-24 bg-gray-100 h-1.5 rounded-full overflow-hidden inline-block align-middle ml-1">
+                                  <div className="h-full bg-[#7F1D1D]" style={{ width: `${total > 0 ? Math.round((completed/total)*100) : 0}%` }} />
                                 </div>
                               </div>
-                            );
-                          })}
+                            </div>
+ 
+                            {/* Course Grade display */}
+                            <div className="flex items-center gap-5 shrink-0 select-none">
+                              <div className="text-right">
+                                <div className="text-[9px] font-bold text-gray-400 uppercase tracking-widest font-sans mb-0.5">Promedio del Curso</div>
+                                <div className={`text-2xl font-black ${hasGrades ? 'text-[#1A2533]' : 'text-gray-300 font-normal italic text-sm'}`}>
+                                  {hasGrades ? `${cg.average}%` : 'Pendiente'}
+                                </div>
+                              </div>
+                              
+                              <div className="w-8 h-8 rounded-full border border-[#E0D7C6]/60 flex items-center justify-center text-gray-400 bg-gray-50">
+                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                              </div>
+                            </div>
+                          </div>
+ 
+                          {/* Expanded Lessons Detail */}
+                          {isExpanded && (
+                            <div className="border-t border-[#E0D7C6]/60 bg-[#FAF9F6] p-5 md:p-6 animate-in slide-in-from-top duration-300 font-sans">
+                              <div className="text-[10px] font-bold text-[#7F1D1D] uppercase tracking-widest mb-4 pb-1.5 border-b border-[#E0D7C6]/30">
+                                Evaluación Continua por Temario
+                              </div>
+                              
+                              {cg.lessons.length === 0 ? (
+                                <p className="text-xs text-gray-400 italic">No hay clases registradas en este curso.</p>
+                              ) : (
+                                <div className="space-y-2.5">
+                                  {cg.lessons.map((lesson) => {
+                                    const isLCompleted = lesson.score !== null;
+                                    return (
+                                      <div 
+                                        key={lesson.id} 
+                                        className="flex items-center justify-between gap-4 py-2 px-3 bg-white border border-[#E0D7C6]/30 rounded-lg hover:shadow-xs transition-shadow"
+                                      >
+                                        <div className="flex items-center gap-2.5 overflow-hidden">
+                                          <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border text-[9px] font-bold tracking-tighter ${
+                                            isLCompleted ? 'bg-[#7F1D1D] text-white border-[#7F1D1D]' : 'bg-gray-50 text-gray-400 border-gray-200'
+                                          }`}>
+                                            D{lesson.day}
+                                          </div>
+                                          <span className="text-xs font-semibold text-gray-800 truncate">{lesson.title}</span>
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-3 shrink-0">
+                                          <span className={`text-[10px] font-sans font-medium px-2 py-0.5 rounded ${
+                                            isLCompleted ? 'text-gray-500 bg-neutral-100' : 'text-gray-400 italic'
+                                          }`}>
+                                            {isLCompleted ? 'Acreditado' : 'Pendiente'}
+                                          </span>
+                                          <div className={`text-xs font-mono font-bold w-12 text-right ${isLCompleted ? 'text-[#1A2533]' : 'text-gray-300'}`}>
+                                            {isLCompleted ? `${lesson.score}%` : '——'}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  )}
-
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Block Exams section if any completed */}
-          {progress.completedBlockExams && Object.keys(progress.completedBlockExams).length > 0 && (
-            <div className="bg-white border border-[#E0D7C6] rounded-xl p-6 md:p-8 shadow-sm">
-              <h4 className="text-sm font-bold text-[#7F1D1D] uppercase tracking-widest mb-4 flex items-center gap-2 font-serif border-b border-[#FAF9F6] pb-2">
-                <Award size={16} /> Exámenes de Hitos Colectivos (Convalidados)
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 font-sans">
-                {Object.entries(progress.completedBlockExams).map(([milestone, data]: [string, any]) => (
-                  <div key={milestone} className="border border-[#E0D7C6] rounded-lg p-4 bg-[#FAF9F6] flex justify-between items-center">
-                    <div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hito de {milestone} Clases</div>
-                      <div className="text-xs text-gray-400 font-medium">Aprobado el {new Date(data.completedAt).toLocaleDateString()}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-base font-bold font-mono text-[#1A2533]">{data.score}%</div>
-                      <div className="text-[9px] font-semibold uppercase text-emerald-600 tracking-wide">Acreditado</div>
+                      );
+                    }) : <p className="text-sm text-gray-500 italic py-4">No hay cursos en esta categoría.</p>}
+                  </div>
+                )}
+                
+                {/* Block Exams section if any completed */}
+                {levelData.key === 'BACHILLERATO' && progress.completedBlockExams && Object.keys(progress.completedBlockExams).length > 0 && (
+                  <div className="bg-white border border-[#E0D7C6] rounded-xl p-6 md:p-8 shadow-sm">
+                    <h4 className="text-sm font-bold text-[#7F1D1D] uppercase tracking-widest mb-4 flex items-center gap-2 font-serif border-b border-[#FAF9F6] pb-2">
+                      <Award size={16} /> Exámenes de Hitos Colectivos (Convalidados)
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 font-sans">
+                      {Object.entries(progress.completedBlockExams).map(([milestone, data]: [string, any]) => (
+                        <div key={milestone} className="border border-[#E0D7C6] rounded-lg p-4 bg-[#FAF9F6] flex justify-between items-center">
+                          <div>
+                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hito de {milestone} Clases</div>
+                            <div className="text-xs text-gray-400 font-medium">Aprobado el {new Date(data.completedAt).toLocaleDateString()}</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-base font-bold font-mono text-[#1A2533]">{data.score}%</div>
+                            <div className="text-[9px] font-semibold uppercase text-emerald-600 tracking-wide">Acreditado</div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-            </div>
-          )}
+            );
+          })}
 
           {/* Transcript Formal Footer */}
           <div className="border border-dashed border-[#E0D7C6] bg-[#FAF9F6]/50 p-6 rounded-xl text-center font-serif text-xs text-gray-500 tracking-wide space-y-2 max-w-2xl mx-auto leading-relaxed">
@@ -568,9 +719,11 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
     >
       <div className="p-6 md:p-8 flex-1 w-full relative">
          <div className="text-[10px] md:text-xs font-sans text-gray-500 uppercase tracking-widest mb-2 flex items-center justify-between gap-2">
-            <span className={course.type === 'LICENCIATURA' ? 'text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200' : 'text-[#7F1D1D] font-bold'}>
+            <span className={course.type === 'LICENCIATURA' ? 'text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200' : course.type === 'MAESTRIA' ? 'text-blue-800 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200' : 'text-[#7F1D1D] font-bold'}>
               {course.type === 'LICENCIATURA' 
                 ? `Licenciatura • ${course.durationMonths || 6} Meses` 
+                : course.type === 'MAESTRIA'
+                ? `Maestría • ${course.durationMonths || 12} Meses`
                 : 'Mínimo 3 Meses'}
             </span>
             {isLocked && (
@@ -593,7 +746,7 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
            </div>
            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
              <div className={`h-full rounded-full transition-all duration-500 ${
-               course.type === 'LICENCIATURA' ? 'bg-[#D97706]' : 'bg-[#7F1D1D]'
+               course.type === 'LICENCIATURA' ? 'bg-[#D97706]' : course.type === 'MAESTRIA' ? 'bg-blue-800' : 'bg-[#7F1D1D]'
              }`} style={{ width: `${percentage}%` }}></div>
            </div>
          </div>

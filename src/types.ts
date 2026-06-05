@@ -29,7 +29,7 @@ export type Lesson = {
 export type Course = {
   id: string;
   title: string;
-  type: 'BIBLE_STUDY' | 'SPECIALIZED' | 'LICENCIATURA';
+  type: 'BIBLE_STUDY' | 'SPECIALIZED' | 'LICENCIATURA' | 'MAESTRIA';
   description: string;
   lessons: Lesson[];
   durationMonths?: number;

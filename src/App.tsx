@@ -18,6 +18,13 @@ export default function App() {
   const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(() => {
+    try {
+      return localStorage.getItem('desktopSidebarOpen') !== 'false';
+    } catch {
+      return true;
+    }
+  });
   const [showProfile, setShowProfile] = useState(false);
   const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string}>({});
   const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
@@ -42,6 +49,12 @@ export default function App() {
     }
   }, [darkMode]);
 
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('desktopSidebarOpen', String(desktopSidebarOpen));
+    } catch (e) {}
+  }, [desktopSidebarOpen]);
 
   // Scroll to top when course or lesson changes
   useEffect(() => {
@@ -126,12 +139,25 @@ export default function App() {
          }}
          progress={progress}
          isOpen={sidebarOpen}
+         isDesktopOpen={desktopSidebarOpen}
+         onToggleDesktop={() => setDesktopSidebarOpen(prev => !prev)}
          user={user}
          customProfile={customProfile}
          onSignOut={signOut}
          onOpenProfile={() => setShowProfile(true)}
          onClose={() => setSidebarOpen(false)}
       />
+
+      {/* Floating button when desktop sidebar is closed */}
+      {!desktopSidebarOpen && (
+        <button
+          onClick={() => setDesktopSidebarOpen(true)}
+          className="hidden md:flex fixed top-4 left-4 z-40 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur shadow-lg border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all active:scale-95"
+          aria-label="Abrir menú"
+        >
+          <Menu size={20} className="text-gray-600 dark:text-gray-300" />
+        </button>
+      )}
 
       {/* Overlay to catch clicks off the sidebar in mobile view */}
       {sidebarOpen && (

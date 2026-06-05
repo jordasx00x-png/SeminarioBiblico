@@ -8,6 +8,9 @@ import { profetasCourse, evangeliosCourse } from './data/courses/profetas_nuevo_
 import { fundamentosCourse } from './data/courses/fundamentos';
 import { pabloCourse } from './data/courses/pablo';
 import { licenciaturaCourses } from './data/courses/licenciatura';
+import { licenciaturasExtra } from './data/courses/licenciaturas_extra';
+
+import { maestriaCourses } from './data/courses/maestria';
 
 export const mockDatabase: Database = {
   courses: [
@@ -24,6 +27,8 @@ export const mockDatabase: Database = {
       ...fundamentosCourse,
       id: 'bases-fundamentales'
     },
-    ...licenciaturaCourses
+    ...licenciaturaCourses,
+    ...licenciaturasExtra,
+    ...maestriaCourses
   ]
 };

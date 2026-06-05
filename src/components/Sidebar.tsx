@@ -9,6 +9,8 @@ interface SidebarProps {
   onSelectLesson: (courseId: string | null, lessonId: string | null) => void;
   progress: UserProgress;
   isOpen: boolean;
+  isDesktopOpen?: boolean;
+  onToggleDesktop?: () => void;
   user?: User | null;
   customProfile?: {fullName?: string; email?: string; phoneNumber?: string};
   onSignOut?: () => void;
@@ -16,7 +18,7 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesson, progress, isOpen, user, customProfile, onSignOut, onOpenProfile, onClose }: SidebarProps) {
+export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesson, progress, isOpen, isDesktopOpen = true, onToggleDesktop, user, customProfile, onSignOut, onOpenProfile, onClose }: SidebarProps) {
   const bibleStudies = courses.filter(c => c.type === 'BIBLE_STUDY');
   const specialized = courses.filter(c => c.type === 'SPECIALIZED');
 
@@ -31,7 +33,11 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
   const isDashboardActive = activeCourseId === null && activeLessonId === null;
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#1A2533] dark:bg-zinc-950 text-white border-r border-[#E0D7C6] dark:border-zinc-800 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-all duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none`}>
+    <div className={`fixed inset-y-0 left-0 z-40 bg-[#1A2533] dark:bg-zinc-950 text-white border-r border-[#E0D7C6] dark:border-zinc-800 transform flex flex-col shadow-2xl md:shadow-none transition-all duration-300 ease-in-out pl-0
+      ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64'} 
+      md:relative md:translate-x-0 
+      ${isDesktopOpen ? 'md:w-64' : 'md:w-0 md:border-r-0 md:opacity-0 md:overflow-hidden'}
+    `}>
       
       {/* Mobile-only menu header with Close button */}
       <div className="p-5 border-b border-[#2C3E50] dark:border-zinc-800 flex items-center justify-between md:hidden bg-[#151D28] dark:bg-zinc-900">
@@ -49,10 +55,19 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
         )}
       </div>
 
-      <div className="p-6 border-b border-[#2C3E50] dark:border-zinc-800 hidden md:block">
+      <div className="p-6 border-b border-[#2C3E50] dark:border-zinc-800 hidden md:flex items-center justify-between">
         <h1 className="text-xl font-bold tracking-tight text-[#E0D7C6]">
           SEMINARIO<br/><span className="text-sm font-normal opacity-80 uppercase tracking-[0.2em] font-sans">Teológico Digital</span>
         </h1>
+        {onToggleDesktop && (
+          <button 
+            onClick={onToggleDesktop} 
+            className="p-1.5 text-gray-400 hover:text-white transition-colors bg-[#1A2533]/50 dark:bg-zinc-800 rounded-lg border border-[#2C3E50] dark:border-zinc-700 md:flex hidden"
+            aria-label="Contraer menú"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
       
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
