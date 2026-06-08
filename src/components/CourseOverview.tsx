@@ -17,10 +17,9 @@ interface CourseOverviewProps {
 export function CourseOverview({ course, progress, user, customProfile, onSelectLesson, onBack }: CourseOverviewProps) {
   const [showCertificate, setShowCertificate] = useState(false);
 
-  const total = course.durationMonths ? course.durationMonths * 30 : 90;
+  const total = course.lessons.length;
   const completedReal = course.lessons.filter(l => progress.completedLessons[l.id]).length;
-  const percentage = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * 100) : 0;
-  const completedScaled = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * total) : 0;
+  const percentage = total > 0 ? Math.round((completedReal / total) * 100) : 0;
 
   return (
     <div className="flex flex-col min-h-full font-serif text-[#2C2C2C] dark:text-stone-300 bg-[#FDFCFB] dark:bg-[#121212] transition-colors">
@@ -59,7 +58,7 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
 
         <div className="bg-white dark:bg-zinc-900 border border-[#E0D7C6] dark:border-zinc-800 rounded-xl p-6 shadow-sm mb-10 animate-in fade-in slide-in-from-bottom-6 duration-500 transition-colors">
            <div className="flex justify-between items-end mb-2">
-              <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-sans">Progreso General ({completedScaled}/{total})</span>
+              <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-sans">Progreso General ({completedReal}/{total})</span>
               <span className="text-sm font-bold text-[#1A2533] dark:text-stone-100">{percentage}%</span>
            </div>
            <div className="h-2 w-full bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-4">
@@ -147,92 +146,69 @@ export function CourseOverview({ course, progress, user, customProfile, onSelect
           })()}
           
           <div className="grid gap-3">
-             {Array.from({ length: total }).map((_, index) => {
-                const lesson = course.lessons[index];
-                const dayNumber = index + 1;
+             {(() => {
+                const maxCompletedIndex = course.lessons.reduce((maxIdx, l, idx) => progress.completedLessons[l.id] ? idx : maxIdx, -1);
                 
-                if (lesson) {
-                   const isCompleted = !!progress.completedLessons[lesson.id];
-                   const score = progress.completedLessons[lesson.id]?.score;
-                   const isUnlocked = index === 0 || !!progress.completedLessons[course.lessons[index - 1].id];
+                return course.lessons.map((lesson, index) => {
+                  const dayNumber = index + 1;
+                  const isCompleted = !!progress.completedLessons[lesson.id];
+                  const score = progress.completedLessons[lesson.id]?.score;
+                  
+                  const isUnlocked = index <= maxCompletedIndex + 2;
+                  const isVisible = index <= maxCompletedIndex + 3;
+                  
+                  if (!isVisible) return null;
 
-                   return (
-                     <button
-                       key={lesson.id}
-                       disabled={!isUnlocked}
-                       onClick={() => isUnlocked && onSelectLesson(lesson.id)}
-                       className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-5 rounded-xl border text-left transition-all duration-200 ${
-                         isUnlocked 
-                           ? 'bg-white border-[#E0D7C6] hover:border-[#1A2533] hover:shadow-md cursor-pointer' 
-                           : 'bg-gray-50 border-gray-100 opacity-60 cursor-not-allowed'
-                       }`}
-                     >
-                        <div className="flex items-start gap-4 mb-3 sm:mb-0">
-                           <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
-                              isCompleted ? 'bg-emerald-100 text-emerald-600' : 
-                              isUnlocked ? 'bg-[#1A2533] text-white' : 'bg-gray-200 text-gray-400'
-                           }`}>
-                              {isCompleted ? <CheckCircle size={20} /> : 
-                               isUnlocked ? <PlayCircle size={20} /> : <Lock size={20} />}
-                           </div>
-                           <div>
-                              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-sans mb-1">
-                                {course.type === 'SPECIALIZED' ? 'Unidad' : 'Día'} {lesson.day}
-                              </div>
-                              <h3 className={`font-bold text-base md:text-lg leading-tight ${isUnlocked ? 'text-[#1A2533]' : 'text-gray-500'}`}>
-                                {lesson.title}
-                              </h3>
-                           </div>
+                  return (
+                    <button
+                      key={lesson.id}
+                      disabled={!isUnlocked}
+                      onClick={() => isUnlocked && onSelectLesson(lesson.id)}
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-5 rounded-xl border text-left transition-all duration-200 ${
+                        isUnlocked 
+                          ? 'bg-white border-[#E0D7C6] hover:border-[#1A2533] hover:shadow-md cursor-pointer' 
+                          : 'bg-gray-50 border-gray-100 opacity-60 cursor-not-allowed'
+                      }`}
+                    >
+                     <div className="flex items-start gap-4 mb-3 sm:mb-0">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+                           isCompleted ? 'bg-emerald-100 text-emerald-600' : 
+                           isUnlocked ? 'bg-[#1A2533] text-white' : 'bg-gray-200 text-gray-400'
+                        }`}>
+                           {isCompleted ? <CheckCircle size={20} /> : 
+                            isUnlocked ? <PlayCircle size={20} /> : <Lock size={20} />}
                         </div>
-                        
-                        <div className="flex items-center sm:w-auto w-full justify-between sm:justify-end pl-14 sm:pl-0 gap-4">
-                           {isCompleted && score !== undefined && (
-                             <div className="text-xs font-sans">
-                               <span className="text-gray-500 uppercase tracking-widest text-[9px] mr-1 block sm:inline">Examen Final:</span>
-                               <span className="font-bold text-[#1A2533]">{score}%</span>
-                             </div>
-                           )}
-                           {isUnlocked && !isCompleted && (
-                              <div className="text-[10px] bg-amber-100 text-amber-800 px-2 py-1 rounded font-bold font-sans uppercase tracking-wider">
-                                Pendiente
-                              </div>
-                           )}
-                        </div>
-                     </button>
-                   );
-                } else {
-                   // Calculate if this placeholder should be shown if it's exactly the one next to a completed or last known lesson
-                   // The prompt said: "HACER QUE AVANZAR AL SIGUEINTE DIA, EN AUTOMATICO APAREZCA OTRO DIA AUNQUE ESTE BLOQUEADA"
-                   // This means if we don't have the lesson data yet, we show it as a placeholder. We will show all 90 days as requested by "APREZCAN TODOS LOS DIAS".
-                   return (
-                     <button
-                       key={`placeholder-${dayNumber}`}
-                       disabled={true}
-                       className="flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-5 rounded-xl border text-left transition-all duration-200 bg-gray-50 border-gray-100 opacity-60 cursor-not-allowed"
-                     >
-                        <div className="flex items-start gap-4 mb-3 sm:mb-0">
-                           <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-gray-200 text-gray-400">
-                              <Lock size={20} />
+                        <div>
+                           <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-sans mb-1">
+                             {course.type === 'SPECIALIZED' ? 'Unidad' : 'Día'} {lesson.day}
                            </div>
-                           <div>
-                              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-sans mb-1">
-                                {course.type === 'SPECIALIZED' ? 'Unidad' : 'Día'} {dayNumber}
-                              </div>
-                              <h3 className="font-bold text-base md:text-lg leading-tight text-gray-500">
-                                {getLessonTitleForDay(course.id, dayNumber)}
-                              </h3>
-                           </div>
+                           <h3 className={`font-bold text-base md:text-lg leading-tight ${isUnlocked ? 'text-[#1A2533]' : 'text-gray-500'}`}>
+                             {lesson.title}
+                           </h3>
                         </div>
-                        
-                        <div className="flex items-center sm:w-auto w-full justify-between sm:justify-end pl-14 sm:pl-0 gap-4">
+                     </div>
+                     
+                     <div className="flex items-center sm:w-auto w-full justify-between sm:justify-end pl-14 sm:pl-0 gap-4">
+                        {isCompleted && score !== undefined && (
+                          <div className="text-xs font-sans">
+                            <span className="text-gray-500 uppercase tracking-widest text-[9px] mr-1 block sm:inline">Examen Final:</span>
+                            <span className="font-bold text-[#1A2533]">{score}%</span>
+                          </div>
+                        )}
+                        {isUnlocked && !isCompleted && (
+                           <div className="text-[10px] bg-amber-100 text-amber-800 px-2 py-1 rounded font-bold font-sans uppercase tracking-wider">
+                             Pendiente
+                           </div>
+                        )}
+                        {!isUnlocked && (
                            <div className="text-[10px] bg-gray-200 text-gray-500 px-2 py-1 rounded font-bold font-sans uppercase tracking-wider">
-                              Bloqueado
+                             Bloqueado
                            </div>
-                        </div>
-                     </button>
-                   );
-                }
-             })}
+                        )}
+                     </div>
+                  </button>
+                );
+              })})()}
           </div>
         </div>
       </div>

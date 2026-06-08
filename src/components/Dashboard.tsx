@@ -16,7 +16,18 @@ interface DashboardProps {
 export function Dashboard({ user, courses, progress, customProfile, onSelectCourse }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'courses' | 'calendar' | 'grades'>('courses');
   const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({});
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    specialized: true,
+    bible: true,
+    licenciatura: true,
+    maestria: true,
+    doctorado: true
+  });
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
   
   const [bypassUnlocked, setBypassUnlocked] = useState<boolean>(() => {
     return localStorage.getItem('bypass_licenciatura_unlock') === 'true';
@@ -50,14 +61,6 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
     return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
   }, 0);
 
-  // Scale total and completed basic lessons to match 90 days per course in UI/KPIs
-  const totalBasicLessonsScaled = basicCourses.length * 90;
-  const completedBasicLessonsScaled = basicCourses.reduce((sum, c) => {
-    const completedReal = c.lessons.filter(l => progress.completedLessons[l.id]).length;
-    const pct = c.lessons.length > 0 ? (completedReal / c.lessons.length) : 0;
-    return sum + Math.round(pct * 90);
-  }, 0);
-
   const allBasicCompleted = completedBasicLessons >= totalBasicLessons && totalBasicLessons > 0;
   const isLicenciaturaUnlocked = allBasicCompleted || bypassUnlocked;
 
@@ -76,13 +79,25 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
   const isDoctoradoUnlocked = allMaestriaCompleted || bypassUnlocked;
 
   const calculateProgressForCourses = (courseList: Course[]) => {
-    const total = courseList.length * 90;
-    const completed = courseList.reduce((sum, c) => {
-      const completedReal = c.lessons.filter(l => progress.completedLessons[l.id]).length;
-      const pct = c.lessons.length > 0 ? (completedReal / c.lessons.length) : 0;
-      return sum + Math.round(pct * 90);
+    const totalLessons = courseList.reduce((sum, c) => sum + c.lessons.length, 0);
+    const completedLessons = courseList.reduce((sum, c) => {
+      return sum + c.lessons.filter(l => progress.completedLessons[l.id]).length;
     }, 0);
-    return { total, completed, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
+    
+    let completedCourses = 0;
+    courseList.forEach(c => {
+      if (c.lessons.length > 0 && c.lessons.every(l => progress.completedLessons[l.id])) {
+        completedCourses++;
+      }
+    });
+
+    return { 
+      totalLessons, 
+      completedLessons, 
+      percentage: totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0,
+      totalCourses: courseList.length,
+      completedCourses
+    };
   };
 
   const bachilleratoProg = calculateProgressForCourses(basicCourses);
@@ -189,7 +204,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                   </div>
                   <div>
                      <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
-                     <div className="text-2xl font-black text-[#1A2533]">{bachilleratoProg.completed} <span className="text-sm text-gray-400 font-normal">/ {bachilleratoProg.total}</span></div>
+                     <div className="text-2xl font-black text-[#1A2533]">{bachilleratoProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {bachilleratoProg.totalCourses}</span></div>
                   </div>
                </div>
             </div>
@@ -216,7 +231,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                   </div>
                   <div>
                      <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
-                     <div className="text-2xl font-black text-[#1A2533]">{licenciaturaProg.completed} <span className="text-sm text-gray-400 font-normal">/ {licenciaturaProg.total}</span></div>
+                     <div className="text-2xl font-black text-[#1A2533]">{licenciaturaProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {licenciaturaProg.totalCourses}</span></div>
                   </div>
                </div>
             </div>
@@ -243,7 +258,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                   </div>
                   <div>
                      <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
-                     <div className="text-2xl font-black text-[#1A2533]">{maestriaProg.completed} <span className="text-sm text-gray-400 font-normal">/ {maestriaProg.total}</span></div>
+                     <div className="text-2xl font-black text-[#1A2533]">{maestriaProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {maestriaProg.totalCourses}</span></div>
                   </div>
                </div>
             </div>
@@ -270,7 +285,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                   </div>
                   <div>
                      <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
-                     <div className="text-2xl font-black text-[#1A2533]">{doctoradoProg.completed} <span className="text-sm text-gray-400 font-normal">/ {doctoradoProg.total}</span></div>
+                     <div className="text-2xl font-black text-[#1A2533]">{doctoradoProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {doctoradoProg.totalCourses}</span></div>
                   </div>
                </div>
             </div>
@@ -340,111 +355,46 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
 
           {filteredSpecialized.length > 0 && (
             <section className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-              <div className="flex items-center gap-3 mb-6">
-                <Award className="text-[#7F1D1D]" size={24} />
-                <h2 className="text-2xl font-bold text-[#1A2533]">Cursos Especializados</h2>
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <Award className="text-[#7F1D1D]" size={24} />
+                  <h2 className="text-2xl font-bold text-[#1A2533]">Cursos Especializados</h2>
+                </div>
+                <button
+                  onClick={() => toggleSection('specialized')}
+                  className="text-xs font-bold text-gray-500 hover:text-[#1A2533] transition-colors flex items-center gap-1 uppercase tracking-widest"
+                >
+                  {expandedSections.specialized ? <><ChevronUp size={14} /> Ocultar</> : <><ChevronDown size={14} /> Ver Cursos</>}
+                </button>
               </div>
-              <div className="grid lg:grid-cols-2 gap-6">
-                {filteredSpecialized.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
-              </div>
+              {expandedSections.specialized && (
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {filteredSpecialized.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
+                </div>
+              )}
             </section>
           )}
 
-          {filteredMaestria.length > 0 && (
+          {filteredBibleStudies.length > 0 && (
             <section className="animate-in fade-in slide-in-from-bottom-10 duration-500">
-              <div className="flex items-center gap-3 mb-6">
-                <BookOpen className="text-[#7F1D1D]" size={24} />
-                <h2 className="text-2xl font-bold text-[#1A2533]">Estudio Bíblico</h2>
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="text-[#7F1D1D]" size={24} />
+                  <h2 className="text-2xl font-bold text-[#1A2533]">Estudio Bíblico</h2>
+                </div>
+                <button
+                  onClick={() => toggleSection('bible')}
+                  className="text-xs font-bold text-gray-500 hover:text-[#1A2533] transition-colors flex items-center gap-1 uppercase tracking-widest"
+                >
+                  {expandedSections.bible ? <><ChevronUp size={14} /> Ocultar</> : <><ChevronDown size={14} /> Ver Cursos</>}
+                </button>
               </div>
-              <div className="grid lg:grid-cols-2 gap-6">
-                {filteredBibleStudies.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
-              </div>
+              {expandedSections.bible && (
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {filteredBibleStudies.map(course => <CourseCard key={course.id} course={course} progress={progress} onSelectCourse={onSelectCourse} />)}
+                </div>
+              )}
             </section>
-          )}
-
-          {/* DOCTORADO */}
-          {(query === '' || filteredDoctorado.length > 0) && (
-          <section className="border-t border-[#E0D7C6]/60 pt-10 animate-in fade-in slide-in-from-bottom-12 duration-500 space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded bg-[#7F1D1D] text-white flex items-center justify-center shrink-0 shadow-sm border border-red-900">
-                   <ShieldCheck size={18} />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-serif font-bold text-[#1A2533]">Doctorado en Divinidades</h2>
-                  <p className="text-xs text-gray-500 font-sans mt-0.5">Máximo nivel de excelencia académica para la investigación teológica y el magisterio eclesial.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2 self-start md:self-auto">
-                <div className={`px-2.5 py-1 rounded-full text-xs font-bold font-sans flex items-center gap-1.5 border transition-all ${
-                  isDoctoradoUnlocked 
-                    ? 'bg-red-50 text-red-900 border-red-200 shadow-xs' 
-                    : 'bg-gray-100 text-gray-500 border-gray-200'
-                }`}>
-                  {isDoctoradoUnlocked ? (
-                    <>
-                      <Unlock size={12} className="text-red-700 animate-pulse" />
-                      GRADO CUMBRE DESBLOQUEADO
-                    </>
-                  ) : (
-                    <>
-                      <Lock size={12} className="text-gray-400" />
-                      DOCTORADO BLOQUEADO
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {!isDoctoradoUnlocked ? (
-              <div className="bg-[#FAF9F6] border border-[#E0D7C6] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 font-sans">
-                <div className="space-y-1.5 flex-1">
-                  <h4 className="text-sm font-bold text-[#7F1D1D] flex items-center gap-1.5">
-                    <Lock size={16} /> Prerrequisito: Cumplir Maestría Previa
-                  </h4>
-                  <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
-                    El ingreso al Doctorado requiere haber completado satisfactoriamente el grado de Maestría ({completedMaestriaLessons}/{totalMaestriaLessons} lecciones completadas). Este nivel está reservado para el estudio crítico y la producción de conocimiento teológico original.
-                  </p>
-                </div>
-                
-                <div className="shrink-0 text-center md:text-right space-y-1.5">
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Avance Maestría</div>
-                  <div className="text-2xl font-serif font-black text-[#1A2533]">
-                    {completedMaestriaLessons} <span className="text-sm text-gray-400 font-normal">/ {totalMaestriaLessons} Clases</span>
-                  </div>
-                  <div className="w-36 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-auto md:ml-auto">
-                    <div className="h-full bg-red-900" style={{ width: `${totalMaestriaLessons > 0 ? (completedMaestriaLessons / totalMaestriaLessons) * 100 : 0}%` }} />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-red-50/40 border border-red-200 rounded-xl p-5 md:p-6 flex items-center gap-4 animate-in zoom-in-95 duration-500 font-sans">
-                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-700 shrink-0 select-none">
-                  <ShieldCheck size={22} strokeWidth={1.7} />
-                </div>
-                <div className="space-y-0.5">
-                  <div className="text-[10px] font-bold text-red-800 uppercase tracking-widest">Admisión Doctoral</div>
-                  <h4 className="text-sm font-bold text-[#1a2533]">¡Bienvenido al Nivel Doctoral!</h4>
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    Su trayectoria académica lo ha traído hasta aquí. Usted forma parte de la élite de investigadores autorizados para cursar las ramas doctorales del Seminario.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <div className="grid lg:grid-cols-2 gap-6">
-              {filteredDoctorado.map(course => (
-                <CourseCard 
-                  key={course.id} 
-                  course={course} 
-                  progress={progress} 
-                  onSelectCourse={isDoctoradoUnlocked ? onSelectCourse : () => {}} 
-                  isLocked={!isDoctoradoUnlocked}
-                />
-              ))}
-            </div>
-          </section>
           )}
 
           {/* LICENCIATURA EN TEOLOGÍA SUPERIOR */}
@@ -479,6 +429,12 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                 </div>
                 
                 <button
+                  onClick={() => toggleSection('licenciatura')}
+                  className="text-[10px] font-bold font-sans px-2.5 py-1 rounded-md border transition-colors bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-xs cursor-pointer flex items-center gap-1 uppercase tracking-widest"
+                >
+                  {expandedSections.licenciatura ? <><ChevronUp size={12} /> Ocultar</> : <><ChevronDown size={12} /> Ver Cursos</>}
+                </button>
+                <button
                   onClick={handleToggleBypass}
                   className={`text-[10px] font-bold font-sans px-2.5 py-1 rounded-md border transition-colors ${
                     bypassUnlocked 
@@ -499,17 +455,17 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                     <Lock size={16} /> Prerrequisito: Cumplir Formación Básica
                   </h4>
                   <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
-                    Las asignaturas avanzadas de Licenciatura exigen haber acreditado la totalidad de los cursos de la formación básica del Seminario ({completedBasicLessonsScaled}/{totalBasicLessonsScaled} lecciones completadas). Su boleta del grado de Bachillerato debe estar totalmente firmada para tramitar la admisión al posgrado.
+                    Las asignaturas avanzadas de Licenciatura exigen haber acreditado la totalidad de los cursos de la formación básica del Seminario ({completedBasicLessons}/{totalBasicLessons} lecciones completadas). Su boleta del grado de Bachillerato debe estar totalmente firmada para tramitar la admisión al posgrado.
                   </p>
                 </div>
                 
                 <div className="shrink-0 text-center md:text-right space-y-1.5">
                   <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Acreditación Básica</div>
                   <div className="text-2xl font-serif font-black text-[#1A2533]">
-                    {completedBasicLessonsScaled} <span className="text-sm text-gray-400 font-normal">/ {totalBasicLessonsScaled} Clases</span>
+                    {completedBasicLessons} <span className="text-sm text-gray-400 font-normal">/ {totalBasicLessons} Clases</span>
                   </div>
                   <div className="w-36 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-auto md:ml-auto">
-                    <div className="h-full bg-[#7F1D1D]" style={{ width: `${totalBasicLessonsScaled > 0 ? (completedBasicLessonsScaled / totalBasicLessonsScaled) * 100 : 0}%` }} />
+                    <div className="h-full bg-[#7F1D1D]" style={{ width: `${totalBasicLessons > 0 ? (completedBasicLessons / totalBasicLessons) * 100 : 0}%` }} />
                   </div>
                 </div>
               </div>
@@ -528,17 +484,19 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
               </div>
             )}
 
-            <div className="grid lg:grid-cols-2 gap-6">
-              {filteredLicenciatura.map(course => (
-                <CourseCard 
-                  key={course.id} 
-                  course={course} 
-                  progress={progress} 
-                  onSelectCourse={isLicenciaturaUnlocked ? onSelectCourse : () => {}} 
-                  isLocked={!isLicenciaturaUnlocked}
-                />
-              ))}
-            </div>
+            {expandedSections.licenciatura && (
+              <div className="grid lg:grid-cols-2 gap-6">
+                {filteredLicenciatura.map(course => (
+                  <CourseCard 
+                    key={course.id} 
+                    course={course} 
+                    progress={progress} 
+                    onSelectCourse={isLicenciaturaUnlocked ? onSelectCourse : () => {}} 
+                    isLocked={!isLicenciaturaUnlocked}
+                  />
+                ))}
+              </div>
+            )}
           </section>
           )}
 
@@ -574,6 +532,12 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                     </>
                   )}
                 </div>
+                <button
+                  onClick={() => toggleSection('maestria')}
+                  className="text-[10px] font-bold font-sans px-2.5 py-1 rounded-md border transition-colors bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-xs cursor-pointer flex items-center gap-1 uppercase tracking-widest"
+                >
+                  {expandedSections.maestria ? <><ChevronUp size={12} /> Ocultar</> : <><ChevronDown size={12} /> Ver Cursos</>}
+                </button>
               </div>
             </div>
 
@@ -613,17 +577,112 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
               </div>
             )}
 
-            <div className="grid lg:grid-cols-2 gap-6">
-              {filteredMaestria.map(course => (
-                <CourseCard 
-                  key={course.id} 
-                  course={course} 
-                  progress={progress} 
-                  onSelectCourse={isMaestriaUnlocked ? onSelectCourse : () => {}} 
-                  isLocked={!isMaestriaUnlocked}
-                />
-              ))}
+            {expandedSections.maestria && (
+              <div className="grid lg:grid-cols-2 gap-6">
+                {filteredMaestria.map(course => (
+                  <CourseCard 
+                    key={course.id} 
+                    course={course} 
+                    progress={progress} 
+                    onSelectCourse={isMaestriaUnlocked ? onSelectCourse : () => {}} 
+                    isLocked={!isMaestriaUnlocked}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+          )}
+
+          {/* DOCTORADO */}
+          {(query === '' || filteredDoctorado.length > 0) && (
+          <section className="border-t border-[#E0D7C6]/60 pt-10 animate-in fade-in slide-in-from-bottom-12 duration-500 space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded bg-[#7F1D1D] text-white flex items-center justify-center shrink-0 shadow-sm border border-red-900">
+                   <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-serif font-bold text-[#1A2533]">Doctorado en Divinidades</h2>
+                  <p className="text-xs text-gray-500 font-sans mt-0.5">Máximo nivel de excelencia académica para la investigación teológica y el magisterio eclesial.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 self-start md:self-auto">
+                <div className={`px-2.5 py-1 rounded-full text-xs font-bold font-sans flex items-center gap-1.5 border transition-all ${
+                  isDoctoradoUnlocked 
+                    ? 'bg-red-50 text-red-900 border-red-200 shadow-xs' 
+                    : 'bg-gray-100 text-gray-500 border-gray-200'
+                }`}>
+                  {isDoctoradoUnlocked ? (
+                    <>
+                      <Unlock size={12} className="text-red-700 animate-pulse" />
+                      GRADO CUMBRE DESBLOQUEADO
+                    </>
+                  ) : (
+                    <>
+                      <Lock size={12} className="text-gray-400" />
+                      DOCTORADO BLOQUEADO
+                    </>
+                  )}
+                </div>
+                <button
+                  onClick={() => toggleSection('doctorado')}
+                  className="text-[10px] font-bold font-sans px-2.5 py-1 rounded-md border transition-colors bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-xs cursor-pointer flex items-center gap-1 uppercase tracking-widest"
+                >
+                  {expandedSections.doctorado ? <><ChevronUp size={12} /> Ocultar</> : <><ChevronDown size={12} /> Ver Cursos</>}
+                </button>
+              </div>
             </div>
+
+            {!isDoctoradoUnlocked ? (
+              <div className="bg-[#FAF9F6] border border-[#E0D7C6] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 font-sans">
+                <div className="space-y-1.5 flex-1">
+                  <h4 className="text-sm font-bold text-[#7F1D1D] flex items-center gap-1.5">
+                    <Lock size={16} /> Prerrequisito: Cumplir Maestría Previa
+                  </h4>
+                  <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
+                    El ingreso al Doctorado requiere haber completado satisfactoriamente el grado de Maestría ({completedMaestriaLessons}/{totalMaestriaLessons} lecciones completadas). Este nivel está reservado para el estudio crítico y la producción de conocimiento teológico original.
+                  </p>
+                </div>
+                
+                <div className="shrink-0 text-center md:text-right space-y-1.5">
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Avance Maestría</div>
+                  <div className="text-2xl font-serif font-black text-[#1A2533]">
+                    {completedMaestriaLessons} <span className="text-sm text-gray-400 font-normal"> / {totalMaestriaLessons} Clases</span>
+                  </div>
+                  <div className="w-36 h-1.5 bg-gray-200 rounded-full overflow-hidden mx-auto md:ml-auto">
+                    <div className="h-full bg-red-900" style={{ width: `${totalMaestriaLessons > 0 ? (completedMaestriaLessons / totalMaestriaLessons) * 100 : 0}%` }} />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-red-50/40 border border-red-200 rounded-xl p-5 md:p-6 flex items-center gap-4 animate-in zoom-in-95 duration-500 font-sans">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-700 shrink-0 select-none">
+                  <ShieldCheck size={22} strokeWidth={1.7} />
+                </div>
+                <div className="space-y-0.5">
+                  <div className="text-[10px] font-bold text-red-800 uppercase tracking-widest">Admisión Doctoral</div>
+                  <h4 className="text-sm font-bold text-[#1a2533]">¡Bienvenido al Nivel Doctoral!</h4>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    Su trayectoria académica lo ha traído hasta aquí. Usted forma parte de la élite de investigadores autorizados para cursar las ramas doctorales del Seminario.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {expandedSections.doctorado && (
+              <div className="grid lg:grid-cols-2 gap-6">
+                {filteredDoctorado.map(course => (
+                  <CourseCard 
+                    key={course.id} 
+                    course={course} 
+                    progress={progress} 
+                    onSelectCourse={isDoctoradoUnlocked ? onSelectCourse : () => {}} 
+                    isLocked={!isDoctoradoUnlocked}
+                  />
+                ))}
+              </div>
+            )}
           </section>
           )}
         </motion.div>
@@ -636,10 +695,8 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
           transition={{ duration: 0.3 }}
         >
           {(() => {
-            const activeCourseFromProgress = courses.find(c => c.lessons.some(l => progress.completedLessons[l.id]));
-            const calendarTotalLessons = activeCourseFromProgress?.durationMonths 
-              ? activeCourseFromProgress.durationMonths * 30 
-              : 90;
+            const activeCourseFromProgress = courses.find(c => c.lessons.some(l => progress.completedLessons[l.id])) || courses[0];
+            const calendarTotalLessons = activeCourseFromProgress?.lessons.length || 90;
             return <StudyCalendar progress={progress} totalLessons={calendarTotalLessons} />;
           })()}
         </motion.div>
@@ -935,10 +992,9 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
 }
 
 function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { key?: React.Key, course: Course, progress: UserProgress, onSelectCourse: (courseId: string) => void, isLocked?: boolean }) {
-  const total = course.durationMonths ? course.durationMonths * 30 : 90;
+  const total = course.lessons.length;
   const completedReal = course.lessons.filter(l => progress.completedLessons[l.id]).length;
-  const percentage = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * 100) : 0;
-  const completedScaled = course.lessons.length > 0 ? Math.round((completedReal / course.lessons.length) * total) : 0;
+  const percentage = total > 0 ? Math.round((completedReal / total) * 100) : 0;
   
   return (
     <motion.button 
@@ -978,7 +1034,7 @@ function CourseCard({ course, progress, onSelectCourse, isLocked = false }: { ke
          
          <div className="space-y-2 mb-2 mt-auto">
            <div className="flex justify-between items-end">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-sans">Progreso ({completedScaled}/{total} Clases)</span>
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-sans">Progreso ({completedReal}/{total} Clases)</span>
               <span className="text-xs font-bold text-[#1A2533]">{percentage}%</span>
            </div>
            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">

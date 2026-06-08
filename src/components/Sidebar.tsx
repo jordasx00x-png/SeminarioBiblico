@@ -105,43 +105,7 @@ export function Sidebar({ courses, activeCourseId, activeLessonId, onSelectLesso
            )}
         </div>
         
-        {activeCourseId !== null && (() => {
-           const activeCourse = courses.find(c => c.id === activeCourseId);
-           if (!activeCourse) return null;
-           
-           return (
-             <div className="pt-2 animate-in fade-in duration-300">
-               <div className="px-3 py-2 text-[10px] uppercase tracking-widest text-[#8E9EAD] dark:text-zinc-500 font-sans">
-                 Módulo Actual
-               </div>
-               <div className="mb-4">
-                 <div className="px-3 py-1.5 text-xs text-white font-bold mb-2 break-words leading-tight">{activeCourse.title}</div>
-                 <ul className="space-y-1">
-                   {activeCourse.lessons.map(lesson => {
-                     const isCompleted = !!progress.completedLessons[lesson.id];
-                     const isActive = activeLessonId === lesson.id;
-                     return (
-                       <li key={lesson.id}>
-                         <button 
-                           onClick={() => onSelectLesson(activeCourse.id, lesson.id)}
-                           className={`w-full text-left px-3 py-2.5 rounded text-sm transition-colors flex items-center justify-between ${
-                             isActive ? 'bg-[#7F1D1D] text-white shadow-lg' : 'text-gray-400 hover:bg-[#2C3E50] dark:hover:bg-zinc-800 hover:text-white'
-                           }`}
-                         >
-                           <span className="truncate flex items-center gap-3">
-                             <BookOpen className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-gray-500 dark:text-zinc-500'}`} />
-                             <span className="truncate">{activeCourse.type === 'SPECIALIZED' ? 'Unidad' : 'Día'} {lesson.day}</span>
-                           </span>
-                           {isCompleted && <CheckCircle size={14} className={`shrink-0 ml-2 ${isActive ? 'text-white/80' : 'text-emerald-400/80'}`} />}
-                         </button>
-                       </li>
-                     );
-                   })}
-                 </ul>
-               </div>
-             </div>
-           );
-        })()}
+        {/* Course lessons removed from Sidebar, they will be viewed in CourseOverview instead */}
       </nav>
       
       <div className="p-4 bg-[#111A24] dark:bg-zinc-900 border-t border-[#2C3E50] dark:border-zinc-800">
