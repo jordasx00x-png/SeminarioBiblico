@@ -48,6 +48,7 @@ mockDatabase.courses.forEach(course => {
                  day: i,
                  title: getLessonTitleForDay(course.id, i),
                  blocks: [{
+                     id: 'block-1',
                      type: 'text',
                      content: `Contenido de estudio para el Día ${i}. Prosiga con su lectura programada y complete los ejercicios de asimilación para este día.`
                  }],

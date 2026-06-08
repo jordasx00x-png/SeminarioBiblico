@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { mockDatabase } from './data';
 import { useProgress } from './hooks/useProgress';
 import { useAuth } from './hooks/useAuth';
+import { useProfile } from './hooks/useProfile';
 import { useStudyReminder } from './hooks/useStudyReminder';
 import { Sidebar } from './components/Sidebar';
 import { LessonViewer } from './components/LessonViewer';
@@ -17,7 +18,7 @@ import { Menu, X, LayoutDashboard, BookOpen, Settings, Edit3 } from 'lucide-reac
 import { AnimatePresence, motion } from 'motion/react';
 
 export default function App() {
-  const { user, isLoading, signInWithGoogle, signOut } = useAuth();
+  const { user, isLoading: authLoading, signInWithGoogle, signOut } = useAuth();
   const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,21 +31,9 @@ export default function App() {
   });
   const [showProfile, setShowProfile] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
-  const [customProfile, setCustomProfile] = useState<{fullName?: string; email?: string; studyReminderEnabled?: boolean; studyReminderTime?: string}>({});
-  const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson } = useProgress();
+  const { profile: customProfile, saveProfile, isLoading: profileLoading } = useProfile();
+  const { progress, markCompleted, markBlockExamCompleted, resetFirstLesson, isLoading: progressLoading } = useProgress();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  // Load profile from local storage when user changes
-  useEffect(() => {
-    if (user) {
-      try {
-        const saved = localStorage.getItem(`profile_${user.uid}`);
-        if (saved) {
-          setCustomProfile(JSON.parse(saved));
-        }
-      } catch(e) {}
-    }
-  }, [user]);
 
   useStudyReminder(customProfile);
 
@@ -70,18 +59,7 @@ export default function App() {
     }
   }, [activeCourseId, activeLessonId]);
 
-  useEffect(() => {
-    if (user) {
-      try {
-        const saved = localStorage.getItem(`profile_${user.uid}`);
-        if (saved) {
-          setCustomProfile(JSON.parse(saved));
-        }
-      } catch(e) {}
-    }
-  }, [user]);
-
-  if (isLoading) {
+  if (authLoading || (user && (progressLoading || profileLoading))) {
     return <WelcomePage />;
   }
 
@@ -195,7 +173,7 @@ export default function App() {
         <ProfileModal 
           user={user} 
           onClose={() => setShowProfile(false)} 
-          onSave={(profileData) => setCustomProfile(profileData)}
+          onSave={saveProfile}
         />
       )}
       </AnimatePresence>

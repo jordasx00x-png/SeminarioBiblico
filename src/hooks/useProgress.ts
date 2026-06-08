@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { UserProgress } from '../types';
+import { db, auth } from '../firebase';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 
 export function useProgress() {
   const [progress, setProgress] = useState<UserProgress>(() => {
@@ -18,44 +20,109 @@ export function useProgress() {
     return { completedLessons: {}, completedBlockExams: {} };
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    try {
-      localStorage.setItem('seminario_progress', JSON.stringify(progress));
-    } catch(e) {
-      console.error("Could not save progress", e);
+    const user = auth.currentUser;
+    if (!user) {
+       setIsLoading(false);
+       return;
     }
-  }, [progress]);
+
+    const docRef = doc(db, 'users', user.uid, 'progress', 'default');
+    
+    setIsLoading(true);
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data() as UserProgress;
+        const newProgress = {
+          completedLessons: data.completedLessons || {},
+          completedBlockExams: data.completedBlockExams || {}
+        };
+        setProgress(newProgress);
+        try {
+          localStorage.setItem('seminario_progress', JSON.stringify(newProgress));
+        } catch(e) {}
+      } else {
+        // Init if missing
+        setDoc(docRef, progress, { merge: true }).catch(console.error);
+      }
+      setIsLoading(false);
+    }, (error) => {
+       console.error("Firebase progress sync error", error);
+       setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth.currentUser?.uid]); // depend on user
+
+  const updateFirestore = async (newProgress: UserProgress) => {
+    const user = auth.currentUser;
+    if (user) {
+      const docRef = doc(db, 'users', user.uid, 'progress', 'default');
+      try {
+        await setDoc(docRef, newProgress, { merge: true });
+      } catch (e) {
+        console.error("Failed to update firestore progress", e);
+      }
+    }
+  };
 
   const markCompleted = (lessonId: string, score: number) => {
-    setProgress((prev) => ({
-      ...prev,
-      completedLessons: {
-        ...prev.completedLessons,
-        [lessonId]: { score, completedAt: new Date().toISOString() }
-      }
-    }));
+    setProgress((prev) => {
+      const newProgress = {
+        ...prev,
+        completedLessons: {
+          ...prev.completedLessons,
+          [lessonId]: { score, completedAt: new Date().toISOString() }
+        }
+      };
+      
+      try {
+        localStorage.setItem('seminario_progress', JSON.stringify(newProgress));
+      } catch(e) {}
+      
+      updateFirestore(newProgress);
+      return newProgress;
+    });
   };
 
   const markBlockExamCompleted = (milestone: number, score: number) => {
-    setProgress((prev) => ({
-      ...prev,
-      completedBlockExams: {
-        ...(prev.completedBlockExams || {}),
-        [milestone]: { score, completedAt: new Date().toISOString() }
-      }
-    }));
+    setProgress((prev) => {
+      const newProgress = {
+        ...prev,
+        completedBlockExams: {
+          ...(prev.completedBlockExams || {}),
+          [milestone]: { score, completedAt: new Date().toISOString() }
+        }
+      };
+      
+      try {
+        localStorage.setItem('seminario_progress', JSON.stringify(newProgress));
+      } catch(e) {}
+      
+      updateFirestore(newProgress);
+      return newProgress;
+    });
   };
 
   const resetFirstLesson = (firstLessonId: string) => {
     setProgress((prev) => {
       const newCompleted = { ...prev.completedLessons };
       delete newCompleted[firstLessonId];
-      return {
+      const newProgress = {
         ...prev,
         completedLessons: newCompleted
       };
+      
+      try {
+        localStorage.setItem('seminario_progress', JSON.stringify(newProgress));
+      } catch(e) {}
+      
+      updateFirestore(newProgress);
+      return newProgress;
     });
   };
 
-  return { progress, markCompleted, markBlockExamCompleted, resetFirstLesson };
+  return { progress, markCompleted, markBlockExamCompleted, resetFirstLesson, isLoading };
 }
