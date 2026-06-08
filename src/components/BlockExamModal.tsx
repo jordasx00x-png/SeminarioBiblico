@@ -1,29 +1,45 @@
 import { useState, useEffect } from 'react';
-import { blockExamQuestions } from '../data/blockExamQuestions';
-import { ExamQuestion } from '../types';
+import { ExamQuestion, Lesson } from '../types';
 import { Award, AlertTriangle, CheckCircle2, XCircle, ScrollText, RefreshCw, BookOpen, AlertCircle } from 'lucide-react';
 
 interface BlockExamModalProps {
   milestone: number;
   courseTitle: string;
   firstLessonTitle: string;
+  lessonsInBlock: Lesson[];
   onPass: (score: number) => void;
   onFail: (score: number) => void;
 }
 
-export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPass, onFail }: BlockExamModalProps) {
+export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, lessonsInBlock, onPass, onFail }: BlockExamModalProps) {
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
 
-  // Select 10 random questions from the pool when the component mounts
+  // Generate questions from the actual lessons in this block
   useEffect(() => {
-    // Deterministic shuffle based on milestone or random
-    const shuffled = [...blockExamQuestions].sort(() => 0.5 - Math.random());
-    setQuestions(shuffled.slice(0, 10));
-  }, [milestone]);
+    let combinedQuestions: ExamQuestion[] = [];
+    lessonsInBlock.forEach(lesson => {
+      if (lesson.finalExam) {
+        combinedQuestions = [...combinedQuestions, ...lesson.finalExam];
+      }
+    });
+
+    // If there are more than 10 questions, shuffle and pick 10. If fewer, just use them all.
+    if (combinedQuestions.length > 10) {
+      combinedQuestions = combinedQuestions.sort(() => 0.5 - Math.random()).slice(0, 10);
+    } else if (combinedQuestions.length === 0) {
+      // Fallback if no specific questions exist, shouldn't normally happen
+      import('../data/blockExamQuestions').then(module => {
+         const shuffled = [...module.blockExamQuestions].sort(() => 0.5 - Math.random());
+         setQuestions(shuffled.slice(0, 10));
+      });
+      return;
+    }
+    setQuestions(combinedQuestions);
+  }, [milestone, lessonsInBlock]);
 
   const isAllAnswered = questions.length > 0 && questions.every(q => answers[q.id] !== undefined);
 
@@ -49,7 +65,8 @@ export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPas
     }, 100);
   };
 
-  const isPassed = correctCount >= 7; // Require minimum 7 correct answers (out of 10)
+  const minRequired = Math.ceil(questions.length * 0.7) || 1;
+  const isPassed = correctCount >= minRequired; // Require 70% correct
 
   return (
     <div className="fixed inset-0 z-50 bg-[#1A2533]/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto block-exam-container h-full w-full">
@@ -67,12 +84,12 @@ export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPas
             Examen de Consolidación de Bloque
           </h2>
           <p className="text-gray-300 text-xs md:text-sm max-w-xl mx-auto font-sans leading-relaxed">
-            Has completado <strong className="text-white font-bold">{milestone} clases</strong>. Para convalidar y certificar tus avances, se requiere contestar este escrutinio general de 10 reactivos interactivos.
+            Has completado <strong className="text-white font-bold">{lessonsInBlock.length} clases</strong> en este bloque. Para convalidar y certificar tus avances, se requiere contestar este escrutinio general de {questions.length} reactivos interactivos de las clases que acabas de ver.
           </p>
-          <div className="mt-4 inline-flex items-center gap-4 bg-[#2C3E50]/40 px-4 py-2 rounded-lg border border-[#3E5C76]/30 text-xs font-sans font-medium text-gray-200">
-            <span>Mínimo requerido: <strong className="text-emerald-400 font-bold">7 de 10 aciertos (70%)</strong></span>
-            <span className="text-gray-500">|</span>
-            <span className="text-red-300">Penalización por reprobar: Regresar al Día 1 de <strong className="italic text-white">{courseTitle}</strong></span>
+          <div className="mt-4 flex flex-wrap justify-center items-center gap-4 bg-[#2C3E50]/40 px-4 py-2 rounded-lg border border-[#3E5C76]/30 text-xs font-sans font-medium text-gray-200">
+            <span>Mínimo requerido: <strong className="text-emerald-400 font-bold">{minRequired} de {questions.length} aciertos (70%)</strong></span>
+            <span className="text-gray-500 hidden md:inline">|</span>
+            <span className="text-red-300">Penalización por reprobar: Regresar al Día {lessonsInBlock[0]?.day || 1} de <strong className="italic text-white">{courseTitle}</strong></span>
           </div>
         </div>
 
@@ -152,7 +169,7 @@ export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPas
                   </div>
                   <h3 className="text-2xl font-bold text-emerald-800 font-serif mb-2">¡EXAMEN CONVALIDADO!</h3>
                   <p className="text-gray-500 text-sm font-sans max-w-md mb-6 leading-relaxed">
-                    Has respondido correctamente <strong className="text-emerald-600 font-bold">{correctCount} de 10 preguntas</strong> ({score}%). Tu aprehensión doctrinal es idónea y rigurosa. Puedes proceder de inmediato a las siguientes clases del seminario.
+                    Has respondido correctamente <strong className="text-emerald-600 font-bold">{correctCount} de {questions.length} preguntas</strong> ({score}%). Tu aprehensión doctrinal es idónea y rigurosa. Puedes proceder de inmediato a las siguientes clases del seminario.
                   </p>
                   <button
                     onClick={() => onPass(score)}
@@ -168,7 +185,7 @@ export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPas
                   </div>
                   <h3 className="text-2xl font-bold text-red-800 font-serif mb-2">EXAMEN NO ACREDITADO</h3>
                   <p className="text-gray-500 text-sm font-sans max-w-md mb-4 leading-relaxed">
-                    Obtuviste <strong className="text-red-600 font-bold">{correctCount} de 10 aciertos</strong> ({score}%). El estándar académico del seminario requiere un mínimo de 7 para convalidar este bloque técnico.
+                    Obtuviste <strong className="text-red-600 font-bold">{correctCount} de {questions.length} aciertos</strong> ({score}%). El estándar académico del seminario requiere un mínimo de {minRequired} para convalidar este bloque técnico.
                   </p>
                   <div className="bg-[#FAF9F6] border border-[#E0D7C6] p-4 rounded-xl text-left max-w-md w-full mb-6 flex gap-3 text-xs leading-relaxed text-[#5C5C5C] font-sans">
                     <AlertCircle size={20} className="text-red-500 shrink-0 mt-0.5" />
@@ -184,7 +201,7 @@ export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPas
                     onClick={() => onFail(score)}
                     className="bg-[#7F1D1D] hover:bg-red-950 text-white font-sans text-xs font-bold uppercase tracking-widest px-8 py-3.5 rounded-lg shadow-md transition-colors flex items-center gap-2"
                   >
-                    <RefreshCw size={14} /> Reestablecer y Retomar Clase 1
+                    <RefreshCw size={14} /> Reestablecer y Retomar Clase
                   </button>
                 </>
               )}
@@ -196,7 +213,7 @@ export function BlockExamModal({ milestone, courseTitle, firstLessonTitle, onPas
         {!submitted && (
           <div className="p-6 bg-gray-50 border-t border-[#E0D7C6] shrink-0 flex justify-between items-center rounded-b-2xl font-sans">
             <span className="text-xs font-semibold text-gray-500">
-              {Object.keys(answers).length} de 10 contestadas
+              {Object.keys(answers).length} de {questions.length} contestadas
             </span>
             <button
               onClick={handleSubmit}

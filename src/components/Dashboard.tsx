@@ -188,7 +188,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
                <BookOpen size={14}/> Bachillerato
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
                   <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
                      <BarChart3 size={24} />
@@ -207,6 +207,15 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                      <div className="text-2xl font-black text-[#1A2533]">{bachilleratoProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {bachilleratoProg.totalCourses}</span></div>
                   </div>
                </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                     <PlayCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Clases Vistas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{bachilleratoProg.completedLessons} <span className="text-sm text-gray-400 font-normal">/ {bachilleratoProg.totalLessons}</span></div>
+                  </div>
+               </div>
             </div>
          </div>
 
@@ -215,7 +224,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
                <GraduationCap size={14}/> Licenciatura {!isLicenciaturaUnlocked && <Lock size={12} className="ml-1"/>}
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
                   <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
                      <BarChart3 size={24} />
@@ -234,6 +243,15 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                      <div className="text-2xl font-black text-[#1A2533]">{licenciaturaProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {licenciaturaProg.totalCourses}</span></div>
                   </div>
                </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                     <PlayCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Clases Vistas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{licenciaturaProg.completedLessons} <span className="text-sm text-gray-400 font-normal">/ {licenciaturaProg.totalLessons}</span></div>
+                  </div>
+               </div>
             </div>
          </div>
 
@@ -242,7 +260,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
                <Award size={14}/> Maestría {!isMaestriaUnlocked && <Lock size={12} className="ml-1"/>}
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
                   <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
                      <BarChart3 size={24} />
@@ -261,6 +279,15 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                      <div className="text-2xl font-black text-[#1A2533]">{maestriaProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {maestriaProg.totalCourses}</span></div>
                   </div>
                </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                     <PlayCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Clases Vistas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{maestriaProg.completedLessons} <span className="text-sm text-gray-400 font-normal">/ {maestriaProg.totalLessons}</span></div>
+                  </div>
+               </div>
             </div>
          </div>
 
@@ -269,7 +296,7 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
             <h3 className="text-xs font-bold text-gray-500 font-sans uppercase tracking-widest mb-3 flex items-center gap-2">
                <ShieldCheck size={14}/> Doctorado {!isDoctoradoUnlocked && <Lock size={12} className="ml-1"/>}
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
                   <div className="w-12 h-12 bg-[#1A2533] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#1A2533]/20">
                      <BarChart3 size={24} />
@@ -286,6 +313,15 @@ export function Dashboard({ user, courses, progress, customProfile, onSelectCour
                   <div>
                      <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Acreditadas</div>
                      <div className="text-2xl font-black text-[#1A2533]">{doctoradoProg.completedCourses} <span className="text-sm text-gray-400 font-normal">/ {doctoradoProg.totalCourses}</span></div>
+                  </div>
+               </div>
+               <div className="bg-white border border-[#E0D7C6] rounded-xl p-5 md:p-6 shadow-sm flex items-center gap-5">
+                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                     <PlayCircle size={24} />
+                  </div>
+                  <div>
+                     <div className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest leading-none mb-1.5">Clases Vistas</div>
+                     <div className="text-2xl font-black text-[#1A2533]">{doctoradoProg.completedLessons} <span className="text-sm text-gray-400 font-normal">/ {doctoradoProg.totalLessons}</span></div>
                   </div>
                </div>
             </div>

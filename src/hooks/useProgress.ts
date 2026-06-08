@@ -87,13 +87,13 @@ export function useProgress() {
     });
   };
 
-  const markBlockExamCompleted = (milestone: number, score: number) => {
+  const markBlockExamCompleted = (milestoneKey: string, score: number) => {
     setProgress((prev) => {
       const newProgress = {
         ...prev,
         completedBlockExams: {
           ...(prev.completedBlockExams || {}),
-          [milestone]: { score, completedAt: new Date().toISOString() }
+          [milestoneKey]: { score, completedAt: new Date().toISOString() }
         }
       };
       

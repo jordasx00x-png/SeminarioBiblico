@@ -37,7 +37,7 @@ export type Course = {
 
 export type UserProgress = {
   completedLessons: Record<string, { score: number; completedAt: string }>;
-  completedBlockExams?: Record<number, { score: number; completedAt: string }>;
+  completedBlockExams?: Record<string, { score: number; completedAt: string }>;
 };
 
 export type Database = {
