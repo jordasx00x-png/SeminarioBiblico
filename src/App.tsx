@@ -17,7 +17,7 @@ import { Menu, X, LayoutDashboard, BookOpen, Settings, Edit3 } from 'lucide-reac
 import { AnimatePresence, motion } from 'motion/react';
 
 export default function App() {
-  const { user, isLoading: authLoading, signInWithGoogle, signOut } = useAuth();
+  const { user, isLoading: authLoading, authError, signInWithGoogle, signOut } = useAuth();
   const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -63,7 +63,7 @@ export default function App() {
   }
 
   if (!user) {
-    return <LandingPage onSignIn={signInWithGoogle} />;
+    return <LandingPage onSignIn={signInWithGoogle} authError={authError} />;
   }
 
   const activeCourse = mockDatabase.courses.find(c => c.id === activeCourseId);

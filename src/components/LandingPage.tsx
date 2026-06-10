@@ -1,10 +1,11 @@
-import { LogIn, BookOpen, ScrollText, GraduationCap, ArrowRight, Library, Users, Sparkles } from 'lucide-react';
+import { LogIn, BookOpen, ScrollText, GraduationCap, ArrowRight, Library, Users, Sparkles, AlertTriangle, ExternalLink } from 'lucide-react';
 
 interface LandingPageProps {
   onSignIn: () => void;
+  authError?: string | null;
 }
 
-export function LandingPage({ onSignIn }: LandingPageProps) {
+export function LandingPage({ onSignIn, authError }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-[#FDFCFB] font-serif text-[#2C2C2C] flex flex-col">
       {/* Header */}
@@ -24,6 +25,43 @@ export function LandingPage({ onSignIn }: LandingPageProps) {
           <span className="hidden sm:inline">Iniciar Sesión</span>
         </button>
       </header>
+
+      {authError && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-5 font-sans animate-in fade-in slide-in-from-top duration-300">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-4 items-start">
+            <div className="p-2 bg-amber-100 text-amber-800 rounded-lg shrink-0 mt-0.5">
+              <AlertTriangle size={24} />
+            </div>
+            <div className="flex-1 space-y-2">
+              <h3 className="font-bold text-amber-900 text-base">Error de Autenticación (Dominio no Autorizado)</h3>
+              <p className="text-amber-800 text-sm leading-relaxed">
+                {authError} Para que el inicio de sesión con Google funcione en este dominio, debe ser agregado en la lista de permitidos en su panel de Firebase.
+              </p>
+              <div className="bg-white/80 border border-amber-200 rounded-lg p-4 mt-3 text-sm text-amber-900 space-y-3">
+                <p className="font-semibold">Siga estos sencillos pasos para resolverlo:</p>
+                <ol className="list-decimal pl-5 space-y-1.5 text-xs text-amber-800 leading-relaxed font-sans">
+                  <li>
+                    Abra la <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="font-bold underline inline-flex items-center gap-0.5 hover:text-amber-950">Consola de Firebase <ExternalLink size={12} /></a> e ingrese a su proyecto <code className="bg-amber-100/50 px-1.5 py-0.5 rounded font-mono font-bold">mudix-489022</code>.
+                  </li>
+                  <li>
+                    En el menú lateral izquierdo, vaya a la sección de <strong className="text-amber-900">Build (Compilación)</strong> y haga clic en <strong className="text-amber-900">Authentication</strong>.
+                  </li>
+                  <li>
+                    Diríjase a la pestaña de <strong className="text-amber-900">Settings (Configuración)</strong> en la barra superior.
+                  </li>
+                  <li>
+                    En la sección de <strong className="text-amber-900">Authorized domains (Dominios autorizados)</strong> (abajo a la derecha), haga clic en <strong className="text-amber-900">Add domain (Añadir dominio)</strong>.
+                  </li>
+                  <li>
+                    Escriba <code className="bg-amber-100/50 px-1.5 py-0.5 rounded font-mono font-bold">{window.location.hostname}</code> y guarde los cambios.
+                  </li>
+                </ol>
+                <p className="text-xs text-amber-600 italic">Una vez guardado, regrese aquí y presione de nuevo el botón de "Iniciar Sesión".</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 flex flex-col">
         {/* Hero Section */}

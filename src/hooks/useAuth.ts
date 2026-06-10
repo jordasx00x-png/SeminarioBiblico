@@ -5,6 +5,7 @@ import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from 'f
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -17,6 +18,7 @@ export function useAuth() {
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
+    setAuthError(null);
     try {
       // Try popup first
       await signInWithPopup(auth, provider);
@@ -24,7 +26,9 @@ export function useAuth() {
       console.error('Error signing in with Google', error);
       
       // If unauthorized domain, alert the user (common issue with custom deployments like Netlify)
-      if (error.code === 'auth/unauthorized-domain') {
+      if (error.code === 'auth/unauthorized-domain' || (error.message && error.message.includes('auth/unauthorized-domain'))) {
+        const errorMsg = `El dominio actual (${window.location.hostname}) no está autorizado en la consola de Firebase.`;
+        setAuthError(errorMsg);
         alert('Este dominio (' + window.location.hostname + ') no ha sido autorizado en la consola de Firebase. Por favor, añádalo a la lista de dominios permitidos.');
         return;
       }
@@ -34,12 +38,16 @@ export function useAuth() {
         try {
           const { signInWithRedirect } = await import('firebase/auth');
           await signInWithRedirect(auth, provider);
-        } catch (e) {
+        } catch (e: any) {
           console.error('Redirect failed too', e);
-          alert('Error al iniciar sesión. Por favor, intente nuevamente o use otro navegador.');
+          if (e.code === 'auth/unauthorized-domain' || (e.message && e.message.includes('auth/unauthorized-domain'))) {
+            setAuthError(`El dominio actual (${window.location.hostname}) no está autorizado en la consola de Firebase.`);
+          } else {
+            setAuthError('Error al iniciar sesión por redirección: ' + e.message);
+          }
         }
       } else {
-        alert('Error al iniciar sesión: ' + error.message);
+        setAuthError('Error al iniciar sesión: ' + error.message);
       }
     }
   };
@@ -48,5 +56,5 @@ export function useAuth() {
     auth.signOut();
   };
 
-  return { user, isLoading, signInWithGoogle, signOut };
+  return { user, isLoading, authError, signInWithGoogle, signOut, setAuthError };
 }
