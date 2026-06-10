@@ -6,7 +6,6 @@ import { useProfile } from './hooks/useProfile';
 import { useStudyReminder } from './hooks/useStudyReminder';
 import { Sidebar } from './components/Sidebar';
 import { LessonViewer } from './components/LessonViewer';
-import { BlockExamModal } from './components/BlockExamModal';
 import { Dashboard } from './components/Dashboard';
 import { CourseOverview } from './components/CourseOverview';
 import { LandingPage } from './components/LandingPage';
@@ -69,32 +68,6 @@ export default function App() {
 
   const activeCourse = mockDatabase.courses.find(c => c.id === activeCourseId);
   const activeLesson = activeCourse?.lessons.find(l => l.id === activeLessonId);
-
-  // Check if there is any pending block exam milestone per course
-  let pendingMilestoneInfo: { courseId: string; courseTitle: string; milestone: number; firstLessonId: string; firstLessonTitle: string; lessonsInBlock: any[] } | null = null;
-  
-  for (const course of mockDatabase.courses) {
-    const completedInCourse = course.lessons.filter(l => progress.completedLessons[l.id]).length;
-    
-    // We check multiples of 3. We assume max lessons is 90.
-    const milestones = Array.from({length: 30}, (_, i) => (i + 1) * 3); // 3, 6, 9...
-    const hitMilestone = milestones.find(m => completedInCourse >= m && (!progress.completedBlockExams || !progress.completedBlockExams[`${course.id}-${m}`]));
-    
-    if (hitMilestone) {
-      const startIndex = hitMilestone - 3;
-      const blockLessons = course.lessons.slice(startIndex, hitMilestone);
-      
-      pendingMilestoneInfo = {
-        courseId: course.id,
-        courseTitle: course.title,
-        milestone: hitMilestone,
-        firstLessonId: blockLessons[0]?.id || course.lessons[0].id,
-        firstLessonTitle: blockLessons[0]?.title || 'Día 1',
-        lessonsInBlock: blockLessons
-      };
-      break; // Only show one block exam at a time
-    }
-  }
 
   return (
     <div className={`min-h-screen bg-[#FDFCFB] text-[#2C2C2C] dark:bg-[#121212] dark:text-stone-100 font-serif flex flex-col md:flex-row relative transition-colors duration-300`}>
@@ -259,20 +232,14 @@ export default function App() {
          </div>
       </main>
 
-      {pendingMilestoneInfo && (
-        <BlockExamModal 
-          milestone={pendingMilestoneInfo.milestone}
-          courseTitle={pendingMilestoneInfo.courseTitle}
-          firstLessonTitle={pendingMilestoneInfo.firstLessonTitle}
-          lessonsInBlock={pendingMilestoneInfo.lessonsInBlock}
-          onPass={(score) => {
-            markBlockExamCompleted(`${pendingMilestoneInfo!.courseId}-${pendingMilestoneInfo!.milestone}`, score);
-          }}
-          onFail={() => {
-            resetFirstLesson(pendingMilestoneInfo!.firstLessonId);
-            setActiveCourseId(pendingMilestoneInfo!.courseId);
-            setActiveLessonId(pendingMilestoneInfo!.firstLessonId);
-          }}
+      {false && (
+        <div 
+          className="hidden"
+
+
+
+          onPass={(score) => {}}
+          onFail={() => {}}
         />
       )}
 
