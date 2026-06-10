@@ -232,16 +232,7 @@ export default function App() {
          </div>
       </main>
 
-      {false && (
-        <div 
-          className="hidden"
 
-
-
-          onPass={(score) => {}}
-          onFail={() => {}}
-        />
-      )}
 
       <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-[#E0D7C6] dark:border-zinc-800 h-16 flex items-center justify-around z-40 px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] transition-colors duration-300">
         <button 
